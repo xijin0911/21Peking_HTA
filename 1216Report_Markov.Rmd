@@ -1,6 +1,6 @@
 ---
 title: "Report for the Markov model (cohort state-transition model)"
-date: 2020.12.20
+date: 2020.12.16
 header-includes:
    - \usepackage{amsmath}
    - \usepackage{booktabs}
@@ -17,7 +17,9 @@ library(xtable)
 
 
 # Results from the paper
-```{r}
+
+These two tables are from the result part of the paper by Yaqin Si.
+```{r message=FALSE}
 strategy_names <- c("strategy1", "strategy2", "strategy3")
 # QALY
 QALY <- data.frame("est" = c(498,691,654),
@@ -33,7 +35,6 @@ rownames(num_CVD) <- strategy_names
 
 ```{r, echo=FALSE, results='asis'}
 t1 <- kable(QALY, format = "latex", booktabs = TRUE)
-
 t2 <- kable(num_CVD, format = "latex", booktabs = TRUE)
 cat(c("\\begin{table}[!htb]
     \\begin{minipage}{.5\\linewidth}
@@ -53,14 +54,37 @@ cat(c("\\begin{table}[!htb]
 ## Markov model
 
 ```{r}
-# Health Status
+# parameters TODO 
+cycle <- 4
+factor <- 0.8
 ```
+
 
 ```{r}
 # transition probability and related parameters
 # calculated by ratetoprob function, based on the incidence of a disease and incidence of a death from the Global Burden of Disease Collaborative Network
+library(readr)
+rate_data <- read_csv("data/ghdx_data.csv")
+source("./function/transform_func.R")
+p_live_oth_death <- RateToProb(rate=rate_data$rate_death_nonCVD,t=cycle)
+p_live_cvd <- RateToProb(rate=rate_data$rate_incidence_CVD,t = cycle)
+p_live_cvdth <- RateToProb(rate=rate_data$rate_death_CVD,t = cycle)
+# incidence rate of the cohort of 3 levels
+p_live_cvd_l <- ProbFactor(p_live_cvd,factor)
+p_live_cvd_m <- ProbFactor(p_live_cvd,factor)
+p_live_cvd_h <- ProbFactor(p_live_cvd,factor)
+# death rate of the cohort of 3 levels
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,factor)
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,factor)
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,factor)
 
 
+
+```
+
+
+```{r}
+# Health Status
 ```
 
 
