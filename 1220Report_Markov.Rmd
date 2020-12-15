@@ -1,0 +1,85 @@
+---
+title: "Report for the Markov model (cohort state-transition model)"
+date: 2020.12.20
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{booktabs}
+   - \usepackage{fancyhdr}
+   - \pagestyle{fancy}
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(xtable)
+
+```
+
+
+# Results from the paper
+```{r}
+strategy_names <- c("strategy1", "strategy2", "strategy3")
+# QALY
+QALY <- data.frame("est" = c(498,691,654),
+                   "LB" = c(103,233,105),
+                   "UB" = c(894,194,1108))
+rownames(QALY) <- strategy_names
+# Prevent CVD events
+num_CVD <- data.frame("est" = c(298,374,346),
+                   "LB" = c(155,181,154),
+                   "UB" = c(441,567,538))
+rownames(num_CVD) <- strategy_names
+```
+
+```{r, echo=FALSE, results='asis'}
+t1 <- kable(QALY, format = "latex", booktabs = TRUE)
+
+t2 <- kable(num_CVD, format = "latex", booktabs = TRUE)
+cat(c("\\begin{table}[!htb]
+    \\begin{minipage}{.5\\linewidth}
+      \\caption{Increased QALY with no screening}
+      \\centering",
+        t1,
+    "\\end{minipage}%
+    \\begin{minipage}{.5\\linewidth}
+      \\centering
+        \\caption{Prevent CVD events}",
+        t2,
+    "\\end{minipage} 
+\\end{table}"
+))  
+```
+
+## Markov model
+
+```{r}
+# Health Status
+```
+
+```{r}
+# transition probability and related parameters
+# calculated by ratetoprob function, based on the incidence of a disease and incidence of a death from the Global Burden of Disease Collaborative Network
+
+
+```
+
+
+```{r}
+# chi-squared test
+
+# t-test
+
+```
+
+```{r}
+HR_l_stg1	<- 0.63
+HR_l_stg2	<- 0.43
+HR_l_stg3	<- 0.45
+HR_m_stg1	<- 1.56
+HR_m_stg2	<- 0.97
+HR_m_stg3	<- 1.09
+HR_h_stg1	<- 1.6
+HR_h_stg2	<- 2.06
+HR_h_stg3	<- 2.11
+```
+
