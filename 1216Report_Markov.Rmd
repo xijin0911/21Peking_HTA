@@ -1,18 +1,20 @@
 ---
 title: "Report for the Markov model (cohort state-transition model)"
-date: 2020.12.16
+date: 2020.12.20
 header-includes:
    - \usepackage{amsmath}
    - \usepackage{booktabs}
    - \usepackage{fancyhdr}
    - \pagestyle{fancy}
+   - \usepackage{array}
+   - \usepackage{multirow}
 output: pdf_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 library(xtable)
-
+library(darthtools)
 ```
 
 
@@ -51,59 +53,133 @@ cat(c("\\begin{table}[!htb]
 ))  
 ```
 
-## Markov model
-
-```{r}
-# parameters TODO 
-cycle <- 4
-factor <- 0.8
-```
-
-
-```{r}
-# transition probability and related parameters
-# calculated by ratetoprob function, based on the incidence of a disease and incidence of a death from the Global Burden of Disease Collaborative Network
-library(readr)
-rate_data <- read_csv("data/ghdx_data.csv")
-source("./function/transform_func.R")
-p_live_oth_death <- RateToProb(rate=rate_data$rate_death_nonCVD,t=cycle)
-p_live_cvd <- RateToProb(rate=rate_data$rate_incidence_CVD,t = cycle)
-p_live_cvdth <- RateToProb(rate=rate_data$rate_death_CVD,t = cycle)
-# incidence rate of the cohort of 3 levels
-p_live_cvd_l <- ProbFactor(p_live_cvd,factor)
-p_live_cvd_m <- ProbFactor(p_live_cvd,factor)
-p_live_cvd_h <- ProbFactor(p_live_cvd,factor)
-# death rate of the cohort of 3 levels
-p_live_cvdth_l <- ProbFactor(p_live_cvdth,factor)
-p_live_cvdth_m <- ProbFactor(p_live_cvdth,factor)
-p_live_cvdth_h <- ProbFactor(p_live_cvdth,factor)
-
-
-
-```
-
-
-```{r}
-# Health Status
-```
-
-
-```{r}
-# chi-squared test
-
-# t-test
-
-```
-
+\newpage
+# Parameters 
 ```{r}
 HR_l_stg1	<- 0.63
-HR_l_stg2	<- 0.43
-HR_l_stg3	<- 0.45
 HR_m_stg1	<- 1.56
-HR_m_stg2	<- 0.97
-HR_m_stg3	<- 1.09
 HR_h_stg1	<- 1.6
+
+HR_l_stg2	<- 0.43
+HR_m_stg2	<- 0.97
 HR_h_stg2	<- 2.06
+
+HR_l_stg3	<- 0.45
+HR_m_stg3	<- 1.09
 HR_h_stg3	<- 2.11
+
+HR_smk_cvd	<-	0.85
+HR_smk_cvdth	<-	0.72
+HR_salt_cvd	<-	0.81
+HR_salt_cvdth	<-	0.66
+HR_wtc_cvd	<-	0.93
+HR_wtc_dth	<-	0.93
+HR_hpt_lip_cvd	<-	0.7
+HR_hpt_lip_cvdth <-	0.82
+HR_cvdhistory_cvd <-	1.37
+HR_cvdhistory_cvdth <-	3.12
+
+HR_high_live_cvdth <-	1.17
 ```
+
+# Markov model
+## Model input 
+```{r, results='asis', message=FALSE}
+library(readr)
+rate_data <- read_csv("data/ghdx_data.csv")
+xtable(data.frame(rate_data),digits=c(0,0,0,6,6,6))
+```
+
+
+```{r}
+## General setup
+source("./function/transform_func.R")
+n_t <- 10   # time horizon, number of cycles
+# S1: live; S2: cvd; S3: cvdth; S4: oth_death
+v_names_states <- c("S1", "S2", "S3", "S4")  
+n_states    <- length(v_names_states)   # number of health states 
+v_names_str <- c("Strategy1", "Strategy2", "Strategy3") # store the strategy names
+n_str       <- length(v_names_str)      # number of strategies
+# Utilities: for calculation of QALY
+out_cvd_free <-	1   # utility when being S1
+out_cvd <- 0.9   # utility when being S2
+out_dth <-	0   # utility when being S3 and S4 together
+out_trans_to_cvd <-	-0.038   # TODO
+
+
+p_live_oth_death <- rate_to_prob(r=rate_data$rate_death_nonCVD,t = n_t)
+p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD,t = n_t)
+p_live_cvdth <- rate_to_prob(r=rate_data$rate_death_CVD,t = n_t)
+
+
+# transition probability from S1 to S2
+p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
+p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1)
+p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg1)
+# transition probability from S1 to S3
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,1.7)
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,1)
+# transition probability from S2 to S3
+p_ccvd_acvd <- ProbFactor(p_live_cvd,HR_cvdhistory_cvd)
+p_ccvd_cvdth <- ProbFactor(p_live_cvdth,HR_cvdhistory_cvdth)
+
+```
+
+
+\begin{center}
+\begin{tabular}{cccc } 
+\hline
+Item & & CVD incidence & CVD cause-specific mortality  \\
+\hline
+\multirow{3}{6em}{Strategy 1}& {Low risk} & `r HR_l_stg1` & 1   \\
+& {Medium risk}& `r HR_m_stg1`  &  1\\
+& {High risk}& `r HR_h_stg1`  &  1.7 \\
+\hline
+\multirow{3}{6em}{Strategy 2}& {Low risk}& `r HR_l_stg2`  & 1 \\
+& {Medium risk}  & `r HR_m_stg2` &  1\\
+& {High risk}  &`r HR_h_stg2`  &  1.7\\
+\hline
+\multirow{3}{6em}{Strategy 3}& {Low risk}  & `r HR_l_stg1` & 1 \\
+& {Medium risk}  & `r HR_m_stg3` &  1\\
+& {High risk}  & `r HR_h_stg3` &  1.7\\
+\hline
+\multirow{3}{6em}{Intervention}& {Weight control}  & `r HR_wtc_cvd` &  `r HR_wtc_dth`\\
+& {Smoke cession}  & `r HR_smk_cvd` & `r HR_smk_cvdth` \\
+& {Salt reduction}  & `r HR_salt_cvd` & `r HR_salt_cvdth` \\
+\hline
+Medication & Statin and antihypertensive &  &  \\
+\hline
+\end{tabular}
+\end{center}
+
+## The component of a Markov model: A transition probability matrix, $P_t$
+$$
+P_t=
+\begin{Bmatrix}
+p_{[1,1,t]} & p_{[1,2,t]} & p_{[1,n_s,t]}\\
+p_{[2,1,t]} & p_{[2,2,t]} & p_{[2,n_s,t]}\\
+...\\
+p_{[n_s,1,t]} & p_{[n_s,2,t]} & p_{[n_s,n_s,t]}\\
+\end{Bmatrix}
+$$
+
+```{r}
+###################### Construct state-transition models for Strategy1 #####################
+#### Create transition arrays ####
+a_P <- array(0, dim      = c(n_states, n_states, n_t),
+                dimnames = list(v_names_states, v_names_states, 0:(n_t - 1)))
+### Fill in array
+## From S1
+# a_P["S1", "S1", ]   <- 0
+a_P["S1", "S2", ]  <- p_live_cvd_l[1:10]
+a_P["S1", "S3", ]   <- p_live_cvdth_l[1:10]
+# a_P["S1", "S4", ]   <- 0
+
+## From S2
+a_P["S2", "S2", ] <- p_ccvd_acvd[1:10]
+a_P["S2", "S3", ] <- p_ccvd_cvdth[1:10]
+# a_P["S2", "S4", ]  <- p_ccvd_cvdth[1:10]
+```
+
 
