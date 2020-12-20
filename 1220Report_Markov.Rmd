@@ -123,9 +123,9 @@ p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
 p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1)
 p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg1)
 # transition probability from S1 to S3
-p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)
-p_live_cvdth_m <- ProbFactor(p_live_cvdth,1.7)
-p_live_cvdth_h <- ProbFactor(p_live_cvdth,1)
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
+# p_live_cvdth_m <- ProbFactor(p_live_cvdth,1.7) # intervention etc.
+# p_live_cvdth_h <- ProbFactor(p_live_cvdth,1) # intervention etc.
 # transition probability from S2 to S3
 p_ccvd_acvd <- rate_to_prob(rate_data$rate_incidence_CVD*HR_cvdhistory_cvd,t=5)
 p_ccvd_cvdth <- rate_to_prob(rate_data$rate_death_CVD*HR_cvdhistory_cvdth,t=5)
