@@ -178,8 +178,8 @@ For example, for the cycle $n_t=1$, the transition matrix for the cohort is:
 $$
 P_1=
 \begin{Bmatrix}
-P4 & P1 &  P2 & P3 \\
-0 & P6 & P5 & P3 \\
+p_{[1,1,t]} & p\_live\_cvd & p\_live\_cvdth & p\_live\_oth\_death \\
+0 & p\_ccvd\_acvd & p\_ccvd\_cvdth & p\_live\_oth\_death \\
 0 & 0 & 0 & 0  \\
 0 & 0 & 0 & 0 \\
 \end{Bmatrix}
@@ -191,32 +191,21 @@ $$
 #### Create transition arrays ####
 a_P <- array(0, dim      = c(n_states, n_states, n_t),
                 dimnames = list(v_names_states, v_names_states, 0:(n_t - 1)))
-# TODO: assume 
-p1 = p2 = p3 = p4 = p5 = p6 = 0.5
 ### Fill in array
 ## From S1
-a_P["S1", "S1", ]   <- (1-(p_live_cvd+p_live_cvdth+p_live_oth_death))*p4
-a_P["S1", "S2", ]  <- p_live_cvd*p1
-a_P["S1", "S3", ]   <- p_live_cvdth*p2
-a_P["S1", "S4", ]   <- p_live_oth_death*p3
-
+a_P["S1", "S1", ]   <- (1-(p_live_cvd+p_live_cvdth+p_live_oth_death))
+a_P["S1", "S2", ]  <- p_live_cvd
+a_P["S1", "S3", ]   <- p_live_cvdth
+a_P["S1", "S4", ]   <- p_live_oth_death
 ## From S2
 a_P["S2", "S1", ] <- 0
-a_P["S2", "S2", ] <- p_ccvd_acvd*p4
-a_P["S2", "S3", ] <- p_ccvd_cvdth*p5
-a_P["S2", "S4", ] <- p_live_oth_death*p3
+a_P["S2", "S2", ] <- p_ccvd_acvd
+a_P["S2", "S3", ] <- p_ccvd_cvdth
+a_P["S2", "S4", ] <- p_live_oth_death
   # 1 - (p_ccvd_acvd + p_ccvd_cvdth)
-
 ## From S3
-a_P["S3", "S1", ] <- 0
-a_P["S3", "S2", ] <- 0
 a_P["S3", "S3", ] <- 1
-a_P["S3", "S4", ] <- 0
-
 ## From S4
-a_P["S4", "S1", ] <- 0
-a_P["S4", "S2", ] <- 0
-a_P["S4", "S3", ] <- 0
 a_P["S4", "S4", ] <- 1
 
 ```
