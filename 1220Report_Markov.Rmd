@@ -114,9 +114,9 @@ out_cvd <- 0.9   # utility when being S2
 out_dth <-	0   # utility when being S3 and S4 together
 out_trans_to_cvd <-	-0.038   # TODO
 
-p_live_oth_death <- rate_to_prob(r=rate_data$rate_death_nonCVD,t = 5)
-p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD,t = 5)
-p_live_cvdth <- rate_to_prob(r=rate_data$rate_death_CVD,t = 5)
+p_live_oth_death <- rate_to_prob(r=rate_data$rate_death_nonCVD,t = 1)
+p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD,t = 1)
+p_live_cvdth <- rate_to_prob(r=rate_data$rate_death_CVD,t = 1)
 
 # transition probability from S1 to S2
 p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
