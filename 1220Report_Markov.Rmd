@@ -163,7 +163,7 @@ a_P["S4", "S4", 6:10] <- 1
 ```
 
 ### Component 2: A  cohort trace matrix $M$
-```{r fig.cap="For the group male aging from 40-50",fig.height=3.5}
+```{r fig.cap="For the group male aging from 40-45",fig.height=3.5}
 #### Run Markov model ####
 ## Initial state vector
 # All starting healthy
