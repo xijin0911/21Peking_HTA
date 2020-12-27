@@ -119,6 +119,8 @@ p_{[1,1,t]} & p\_live\_cvd & p\_live\_cvdth & p\_live\_oth\_death \\
 $$
 
 
+
+
 ```{r}
 ###################### Construct state-transition models for Strategy1 #####################
 #### Create transition arrays ####
@@ -136,7 +138,8 @@ a_P["S2", "S1", 0:6] <- 0
 a_P["S2", "S2", 0:6] <- p_ccvd_acvd[1]
 a_P["S2", "S3", 0:6] <- p_ccvd_cvdth[1]
 # TODO: cvd people to death of other reasons (P3)
-a_P["S2", "S4", 0:6] <- 1 - (p_ccvd_acvd[1] + p_ccvd_cvdth[1])
+a_P["S2", "S4", 0:6] <- p_live_oth_death[1]
+  # 1 - (p_ccvd_acvd[1] + p_ccvd_cvdth[1])
 ## From S3
 a_P["S3", "S3", 0:6] <- 1
 ## From S4
@@ -179,6 +182,7 @@ for(t in 1:n_t){
   ## Fill in cohort trace
   m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]
 }
+m_M
 plot_trace(m_M)
 ```
 
@@ -195,29 +199,21 @@ HR_h_stg2	<- 2.06
 HR_l_stg3	<- 0.45
 HR_m_stg3	<- 1.09
 HR_h_stg3	<- 2.11
-
+# lifestyle intervention for medium risk and above
 HR_smk_cvd	<-	0.85
 HR_smk_cvdth	<-	0.72
 HR_salt_cvd	<-	0.81
 HR_salt_cvdth	<-	0.66
 HR_wtc_cvd	<-	0.93
 HR_wtc_dth	<-	0.93
+# treatment intervention for high risk (additional)
 HR_hpt_lip_cvd	<-	0.7
 HR_hpt_lip_cvdth <-	0.82
-# transition probability from S1 to S2
-p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
-p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1)
-p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg1)
-# transition probability from S1 to S3
-p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
-# p_live_cvdth_m <- ProbFactor(p_live_cvdth,1.7) # intervention etc.
-# p_live_cvdth_h <- ProbFactor(p_live_cvdth,1) # intervention etc.
 ```
-
 
 \begin{center}
 \begin{table}
-\caption{Incedence rate}
+\caption{Incidence rate}
 \begin{tabular}{cccc} 
 \hline
 Item & & CVD incidence(HR) & CVD cause-specific mortality (HR)  \\
@@ -238,9 +234,60 @@ Item & & CVD incidence(HR) & CVD cause-specific mortality (HR)  \\
 & {Smoke cession}  & `r HR_smk_cvd` & `r HR_smk_cvdth` \\
 & {Salt reduction}  & `r HR_salt_cvd` & `r HR_salt_cvdth` \\
 \hline
-Medication & Statin and antihypertensive &  &  \\
+Medication & Statin and antihypertensive & `r HR_hpt_lip_cvd` &  `r HR_hpt_lip_cvdth` \\
 \hline
 \end{tabular}
 \end{table}
 \end{center}
+
+
+```{r}
+## For strategy 1
+# transition probability to cvd
+p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
+p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1*
+                             # lifestyle intervention
+                             HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd) 
+p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg1* 
+                             # lifestyle intervention
+                             HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth*   
+                             HR_hpt_lip_cvdth)   # treatment intervention 
+
+# transition probability to death
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,1*
+                               # lifestyle intervention
+                               HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)   
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,1.7*
+                               # lifestyle intervention
+                               HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth* 
+                               HR_hpt_lip_cvdth) # treatment intervention 
+```
+
+
+
+\begin{table}
+\begin{center}
+\caption{Transition probability matrix for Strategy 1}
+\begin{tabular}{cccc} 
+\hline
+$p_{[1,1,t]}$ & $p\_live\_cvd\_l$ & $p\_live\_cvdth\_l$ & $p\_live\_oth\_death\_l$ \\
+0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
+0 & 0 & 0 & 0  \\
+0 & 0 & 0 & 0 \\
+\hline
+$p_{[1,1,t]}$ & $p\_live\_cvd\_m$& $p\_live\_cvdth\_m$ & $p\_live\_oth\_death\_m$ \\
+0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
+0 & 0 & 0 & 0  \\
+0 & 0 & 0 & 0 \\
+\hline
+$p_{[1,1,t]}$ & $p\_live\_cvd\_h$ & $p\_live\_cvdth\_h$& $p\_live\_oth\_death\_h$ \\
+0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
+0 & 0 & 0 & 0  \\
+0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
 
