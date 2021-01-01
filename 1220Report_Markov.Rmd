@@ -89,11 +89,14 @@ out_dth <-	0   # utility when being S3 and S4 together
 out_trans_to_cvd <-	-0.038   # TODO
 
 p_live_oth_death <- rate_to_prob(r=rate_data$rate_death_nonCVD,t = 1)
-p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD,t = 1)
-p_live_cvdth <- rate_to_prob(r=rate_data$rate_death_CVD,t = 1)
+p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD, t=1)
+p_live_cvdth <- rate_to_prob(r=rate_data$rate_death_CVD, t=1)
 # transition probability from S2 to S3
-p_ccvd_acvd <- rate_to_prob(rate_data$rate_incidence_CVD*HR_cvdhistory_cvd,t=5)
-p_ccvd_cvdth <- rate_to_prob(rate_data$rate_death_CVD*HR_cvdhistory_cvdth,t=5)
+p_ccvd_acvd <- rate_to_prob(rate_data$rate_incidence_CVD*HR_cvdhistory_cvd, t=1)
+p_ccvd_cvdth <- rate_to_prob(rate_data$rate_death_CVD*HR_cvdhistory_cvdth,t=1)
+set.seed(100)
+p_acvd_cvdth <- rep(runif(1,min=0.02,max=0.1),length=length(p_live_cvd))
+
 ```
 
 ### Component 1: A transition probability matrix $P_t$
@@ -107,12 +110,11 @@ p_{[4,1,t]} & p_{[4,2,t]} & p_{[4,3,t]} & p_{[4,4,t]}\\
 \end{Bmatrix}
 $$
 
-For example, the transition matrix for the cohort is:
+For example, the transition matrix for the cohort is $P_1$:
 $$
-P_1=
 \begin{Bmatrix}
-p_{[1,1,t]} & p\_live\_cvd & p\_live\_cvdth & p\_live\_oth\_death \\
-0 & p\_ccvd\_acvd & p\_ccvd\_cvdth & p\_live\_oth\_death \\
+p_{[1,1,1]} & p\_live\_cvd*(1-p\_acvd\_cvdth) & p\_live\_cvdth+p\_live\_cvd*p\_acvd\_cvdth & p\_live\_oth\_death \\
+0 & 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death & p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth  & p\_live\_oth\_death \\
 0 & 0 & 0 & 0  \\
 0 & 0 & 0 & 0 \\
 \end{Bmatrix}
@@ -124,41 +126,37 @@ $$
 ```{r}
 ###################### Construct state-transition models for Strategy1 #####################
 #### Create transition arrays ####
-a_P <- array(0, dim      = c(n_states, n_states, n_t),
-                dimnames = list(v_names_states, v_names_states, 0:(n_t - 1)))
+a_P <- array(0, dim      = c(n_states, n_states, 10),
+                dimnames = list(v_names_states, v_names_states, 1:10))
 ## From S1
-a_P["S1", "S1", 0:6]   <- (1-(p_live_cvd[1] +
-                             p_live_cvdth[1] +
-                             p_live_oth_death[1]))
-a_P["S1", "S2", 0:6]  <- p_live_cvd[1]
-a_P["S1", "S3", 0:6]   <- p_live_cvdth[1]
-a_P["S1", "S4", 0:6]   <- p_live_oth_death[1]
+a_P["S1", "S1", 1:5]   <- 1-(p_live_cvd[1]*(1-p_acvd_cvdth[1]) + p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1] + p_live_oth_death[1])
+a_P["S1", "S2", 1:5]  <- p_live_cvd[1]*(1-p_acvd_cvdth[1])
+a_P["S1", "S3", 1:5]   <- p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1]
+a_P["S1", "S4", 1:5]   <- p_live_oth_death[1]
 ## From S2
-a_P["S2", "S1", 0:6] <- 0
-a_P["S2", "S2", 0:6] <- p_ccvd_acvd[1]
-a_P["S2", "S3", 0:6] <- p_ccvd_cvdth[1]
+a_P["S2", "S1", 1:5] <- 0
+a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[1]-(p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1])
+a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1]
 # TODO: cvd people to death of other reasons (P3)
-a_P["S2", "S4", 0:6] <- p_live_oth_death[1]
+a_P["S2", "S4", 1:5] <- p_live_oth_death[1]
   # 1 - (p_ccvd_acvd[1] + p_ccvd_cvdth[1])
 ## From S3
-a_P["S3", "S3", 0:6] <- 1
+a_P["S3", "S3", 1:5] <- 1
 ## From S4
-a_P["S4", "S4", 0:6] <- 1
+a_P["S4", "S4", 1:5] <- 1
 
 # From S1
-a_P["S1", "S1", 6:10] <- (1-(p_live_cvd[1+1] +
-                             p_live_cvdth[1+1] +
-                             p_live_oth_death[1+1]))
-a_P["S1", "S2", 6:10]  <- p_live_cvd[1+1]
-a_P["S1", "S3", 6:10]  <- p_live_cvdth[1+1]
+a_P["S1", "S1", 6:10] <-  1-(p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1]) + p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1] + p_live_oth_death[1+1])
+a_P["S1", "S2", 6:10]  <- p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1])
+a_P["S1", "S3", 6:10]  <- p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1]
 a_P["S1", "S4", 6:10]  <- p_live_oth_death[1+1]
 ## From S2
 a_P["S2", "S1", 6:10] <- 0
-a_P["S2", "S2", 6:10] <- p_ccvd_acvd[1+1]
-a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[1+1]
+a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[1+1]-(p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1])
+a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1]
 # TODO: cvd people to death of other reasons
 # p_live_oth_death != p_cvd _oth_death (P3)
-a_P["S2", "S4", 6:10] <- 1 - (p_ccvd_acvd[1+1] + p_ccvd_cvdth[1+1])
+a_P["S2", "S4", 6:10] <-  p_live_oth_death[1+1]
 ## From S3
 a_P["S3", "S3", 6:10] <- 1
 ## From S4
@@ -178,11 +176,23 @@ m_M <- matrix(0,nrow     = (n_t + 1), ncol = n_states,
 m_M[1, ] <- v_s_init
 
 ## Iterative solution of cSTM
-for(t in 1:n_t){
+for(t in 1:5){
   ## Fill in cohort trace
-  m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]
+  m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]   
 }
-m_M
+rowSums(m_M)
+
+for(t in 6:10){
+  ## Fill in cohort trace
+  m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]   
+}
+rowSums(m_M)
+
+
+```
+
+
+```{r fig.cap="For the group male aging from 40-45",fig.height=3.5}
 plot_trace(m_M)
 ```
 
@@ -262,6 +272,9 @@ p_live_cvdth_h <- ProbFactor(p_live_cvdth,1.7*
                                # lifestyle intervention
                                HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth* 
                                HR_hpt_lip_cvdth) # treatment intervention 
+# again get cvd 
+p_ccvd_acvd <- ProbFactor(p_live_cvd,HR_cvdhistory_cvd) 
+p_ccvd_cvdth <- ProbFactor(p_live_cvdth,HR_cvdhistory_cvdth)
 ```
 
 
