@@ -1,6 +1,5 @@
 ---
 title: "Report for the Markov model (cohort state-transition model)"
-date: 2020.12.20
 header-includes:
    - \usepackage{amsmath}
    - \usepackage{booktabs}
@@ -8,7 +7,10 @@ header-includes:
    - \pagestyle{fancy}
    - \usepackage{array}
    - \usepackage{multirow}
+   # - \usepackage{afterpage}
+   - \usepackage{rotating}
 output: pdf_document
+# classoption: landscape
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -57,9 +59,7 @@ cat(c("\\begin{table}[!htb]
 \newpage
 # Part I. General population (without CVD)
 ```{r echo=FALSE}
-HR_cvdhistory_cvd <-	1.37
-HR_cvdhistory_cvdth <- 3.12
-HR_high_live_cvdth <-	1.17
+
 ```
 
 ## Markov model
@@ -82,11 +82,18 @@ v_names_states <- c("S1", "S2", "S3", "S4")
 n_states    <- length(v_names_states)   # number of health states 
 v_names_str <- c("Strategy0","Strategy1", "Strategy2", "Strategy3") # store the strategy names
 n_str       <- length(v_names_str)      # number of strategies
-# Utilities: for calculation of QALY
+
+# Health utilities
 out_cvd_free <-	1   # utility when being S1
 out_cvd <- 0.9   # utility when being S2
 out_dth <-	0   # utility when being S3 and S4 together
-out_trans_to_cvd <-	-0.038   # TODO
+out_trans_to_cvd <-	-0.038    # TODO
+
+uti_values <- c(out_cvd_free, out_cvd, out_dth, out_dth)
+
+HR_cvdhistory_cvd <-	1.37
+HR_cvdhistory_cvdth <- 3.12
+HR_high_live_cvdth <-	1.17
 
 p_live_oth_death <- rate_to_prob(r=rate_data$rate_death_nonCVD,t = 1)
 p_live_cvd <- rate_to_prob(r=rate_data$rate_incidence_CVD, t=1)
@@ -100,6 +107,11 @@ p_acvd_cvdth <- rep(runif(1,min=0.02,max=0.1),length=length(p_live_cvd))
 ```
 
 ### Component 1: A transition probability matrix $P_t$
+
+\begin{center}
+\includegraphics[width=6in]{Mat.png}
+\end{center}
+
 $$
 P_t=
 \begin{Bmatrix}
@@ -109,19 +121,25 @@ p_{[3,1,t]} & p_{[3,2,t]} & p_{[3,3,t]} & p_{[3,4,t]} \\
 p_{[4,1,t]} & p_{[4,2,t]} & p_{[4,3,t]} & p_{[4,4,t]}\\
 \end{Bmatrix}
 $$
+\begin{center}
+\includegraphics[width=8in]{TreeAge.jpg}
+\end{center}
 
-For example, the transition matrix for the cohort is $P_1$:
-$$
-\begin{Bmatrix}
-p_{[1,1,1]} & p\_live\_cvd*(1-p\_acvd\_cvdth) & p\_live\_cvdth+p\_live\_cvd*p\_acvd\_cvdth & p\_live\_oth\_death \\
-0 & 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death & p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth  & p\_live\_oth\_death \\
-0 & 0 & 0 & 0  \\
-0 & 0 & 0 & 0 \\
-\end{Bmatrix}
-$$
+Thus, 
 
+$P4 = 1-P1-P2-P3$
 
+$P1 = p\_live\_cvd*(1-p\_acvd\_cvdth)$
 
+$P2 = p\_live\_cvdth + p\_live\_cvd*p\_acvd\_cvdth$ 
+
+$P3 = p\_live\_oth\_death$
+
+$P6= 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death$
+
+$P5= p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth$
+
+In what follows, an example for the groups of male patients, aging from 40 to 45 is illustrated.
 
 ```{r}
 ###################### Construct state-transition models for Strategy1 #####################
@@ -129,38 +147,43 @@ $$
 a_P <- array(0, dim      = c(n_states, n_states, 10),
                 dimnames = list(v_names_states, v_names_states, 1:10))
 ## From S1
-a_P["S1", "S1", 1:5]   <- 1-(p_live_cvd[1]*(1-p_acvd_cvdth[1]) + p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1] + p_live_oth_death[1])
+a_P["S1", "S1", 1:5]   <- 1-(p_live_cvd[1]*(1-p_acvd_cvdth[1]) +
+                               p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1] +
+                               p_live_oth_death[1])
 a_P["S1", "S2", 1:5]  <- p_live_cvd[1]*(1-p_acvd_cvdth[1])
 a_P["S1", "S3", 1:5]   <- p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1]
 a_P["S1", "S4", 1:5]   <- p_live_oth_death[1]
 ## From S2
 a_P["S2", "S1", 1:5] <- 0
-a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[1]-(p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1])
-a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1]
-# TODO: cvd people to death of other reasons (P3)
+a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[1]-
+  (p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1])
+a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[1]+
+  p_ccvd_acvd[1]*p_acvd_cvdth[1]
 a_P["S2", "S4", 1:5] <- p_live_oth_death[1]
-  # 1 - (p_ccvd_acvd[1] + p_ccvd_cvdth[1])
 ## From S3
 a_P["S3", "S3", 1:5] <- 1
 ## From S4
 a_P["S4", "S4", 1:5] <- 1
 
 # From S1
-a_P["S1", "S1", 6:10] <-  1-(p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1]) + p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1] + p_live_oth_death[1+1])
+a_P["S1", "S1", 6:10] <-  1-(p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1])+
+                               p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1] +
+                               p_live_oth_death[1+1])
 a_P["S1", "S2", 6:10]  <- p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1])
 a_P["S1", "S3", 6:10]  <- p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1]
 a_P["S1", "S4", 6:10]  <- p_live_oth_death[1+1]
 ## From S2
 a_P["S2", "S1", 6:10] <- 0
-a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[1+1]-(p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1])
+a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[1+1]-
+  (p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1])
 a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1]
-# TODO: cvd people to death of other reasons
-# p_live_oth_death != p_cvd _oth_death (P3)
 a_P["S2", "S4", 6:10] <-  p_live_oth_death[1+1]
 ## From S3
 a_P["S3", "S3", 6:10] <- 1
 ## From S4
 a_P["S4", "S4", 6:10] <- 1
+# the a_P is the transition for 10 cycles
+a_P
 ```
 
 ### Component 2: A  cohort trace matrix $M$
@@ -187,7 +210,7 @@ for(t in 6:10){
   m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]   
 }
 rowSums(m_M)
-
+m_M
 
 ```
 
@@ -252,7 +275,8 @@ Medication & Statin and antihypertensive & `r HR_hpt_lip_cvd` &  `r HR_hpt_lip_c
 
 
 ```{r}
-## For strategy 1
+## For strategy 1 
+## 7 transition probabilities by some parameters
 # transition probability to cvd
 p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
 p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1*
@@ -277,30 +301,35 @@ p_ccvd_acvd <- ProbFactor(p_live_cvd,HR_cvdhistory_cvd)
 p_ccvd_cvdth <- ProbFactor(p_live_cvdth,HR_cvdhistory_cvdth)
 ```
 
-
-
-\begin{table}
 \begin{center}
-\caption{Transition probability matrix for Strategy 1}
-\begin{tabular}{cccc} 
-\hline
-$p_{[1,1,t]}$ & $p\_live\_cvd\_l$ & $p\_live\_cvdth\_l$ & $p\_live\_oth\_death\_l$ \\
-0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
-0 & 0 & 0 & 0  \\
-0 & 0 & 0 & 0 \\
-\hline
-$p_{[1,1,t]}$ & $p\_live\_cvd\_m$& $p\_live\_cvdth\_m$ & $p\_live\_oth\_death\_m$ \\
-0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
-0 & 0 & 0 & 0  \\
-0 & 0 & 0 & 0 \\
-\hline
-$p_{[1,1,t]}$ & $p\_live\_cvd\_h$ & $p\_live\_cvdth\_h$& $p\_live\_oth\_death\_h$ \\
-0 & $p\_ccvd\_acvd$ & $p\_ccvd\_cvdth$ & $p\_live\_oth\_death$ \\
-0 & 0 & 0 & 0  \\
-0 & 0 & 0 & 0 \\
-\hline
-\end{tabular}
+\includegraphics[width=6in]{Mat.png}
 \end{center}
-\end{table}
+
+
+Thus, we take the example of individuals in the low level
+
+$\underline{P4} = 1-P1-P2-P3$
+
+$\underline{P1} = p\_live\_cvd\_l*(1-p\_acvd\_cvdth)$
+
+$\underline{P2} = p\_live\_cvdth\_l + p\_live\_cvd\_l*p\_acvd\_cvdth$ 
+
+$P3 = p\_live\_oth\_death$  
+
+$P6= 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death$
+
+$P5= p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth$
+
+We say that the screening strategy will have an influence on the first line of the transition matrix.
+
+
+
+```{r}
+# calculation of the QALY
+mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
+mat[1:nrow(m_M),] <- uti_values
+print(m_M*mat)
+sum(m_M*mat)
+```
 
 
