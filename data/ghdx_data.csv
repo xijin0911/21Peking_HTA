@@ -1,4 +1,4 @@
-Index,sex,rate_incidence_CVD,rate_death_CVD,rate_death_nonCVD
+index,sex,incidence,death_CVD,death_nonCVD
 40,male,0.003888,0.000819,0.002494
 45,male,0.006729,0.00134,0.003399
 50,male,0.010564,0.002302,0.004951
