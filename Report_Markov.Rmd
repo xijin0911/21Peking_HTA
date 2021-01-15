@@ -339,7 +339,9 @@ m_M
 ```{r}
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_l <- sum(m_M*mat)  # is the calculated QALY for the assumed patient under low level
 print(m_M*mat)
 
@@ -396,7 +398,9 @@ for(t in 1:9){
 ```{r echo=FALSE}
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_m <- sum(m_M*mat)  # is the calculated QALY for the assumed patient under medium level
 ```
 
@@ -451,7 +455,9 @@ for(t in 1:9){
 ```{r echo=FALSE}
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_h <- sum(m_M*mat)  # is the calculated QALY for the assumed patient under high level
 ```
 
@@ -523,7 +529,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_h[i] <- sum(m_M*mat)
 }
 
@@ -558,7 +566,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_h[7] <- sum(m_M*mat)
 #-----------------------------------------------------------------------------------
 # i specify the group of female patients (age)
@@ -607,7 +617,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_h[i] <- sum(m_M*mat)
 }
 
@@ -640,7 +652,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_h[14] <- sum(m_M*mat)
 ```
 
@@ -692,7 +706,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_m[i] <- sum(m_M*mat)
 }
 
@@ -727,7 +743,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_m[7] <- sum(m_M*mat)
 #-----------------------------------------------------------------------------------
 # i specify the group of female patients (age)
@@ -776,7 +794,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_m[i] <- sum(m_M*mat)
 }
 
@@ -809,7 +829,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_m[14] <- sum(m_M*mat)
 ```
 
@@ -861,7 +883,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_l[i] <- sum(m_M*mat)
 }
 
@@ -896,7 +920,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_l[7] <- sum(m_M*mat)
 #-----------------------------------------------------------------------------------
 # i specify the group of female patients (age)
@@ -945,7 +971,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_l[i] <- sum(m_M*mat)
 }
 
@@ -978,7 +1006,9 @@ for(t in 1:9){
 }
 # calculation of the QALY
 mat <- matrix(NA, nrow=nrow(m_M),ncol = 4)
-mat[1:nrow(m_M),] <- uti_values
+for (j in 1:nrow(m_M)){
+  mat[j,] <- uti_values
+}
 QALY_l[14] <- sum(m_M*mat)
 ```
 
