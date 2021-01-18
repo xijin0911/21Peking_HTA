@@ -1,0 +1,2907 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={No screening},
+  pdfauthor={Jiamin},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{No screening}
+\author{Jiamin}
+\date{1/18/2021}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{##########################################}
+\CommentTok{####improved r code for cvd screening#####}
+\CommentTok{##########################################}
+
+\CommentTok{################################}
+\CommentTok{#####一. no screening}
+\CommentTok{###############################}
+
+\CommentTok{###1. transition matrix}
+\KeywordTok{library}\NormalTok{(openxlsx)}
+\NormalTok{rate_data <-}\KeywordTok{read.csv}\NormalTok{(}\StringTok{"data/ghdx_data.csv"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"function/transform_func.R"}\NormalTok{)}
+\NormalTok{p1_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\KeywordTok{RateToProb}\NormalTok{(rate_data}\OperatorTok{$}\NormalTok{incidence, }\DecValTok{1}\NormalTok{) }\CommentTok{##一般人群发病概率}
+\NormalTok{p2_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\KeywordTok{RateToProb}\NormalTok{(rate_data}\OperatorTok{$}\NormalTok{death_CVD, }\DecValTok{1}\NormalTok{) }\CommentTok{##一般人群死于cvd的概率}
+\NormalTok{p3 <-}\StringTok{ }\KeywordTok{RateToProb}\NormalTok{(rate_data}\OperatorTok{$}\NormalTok{death_nonCVD, }\DecValTok{1}\NormalTok{) }\CommentTok{##一般人群死于非cvd的概率}
+\NormalTok{p5_}\DecValTok{0}\NormalTok{ <-}\StringTok{ }\KeywordTok{ProbFactor}\NormalTok{(p1_}\DecValTok{0}\NormalTok{, }\FloatTok{3.12}\NormalTok{)  }\CommentTok{##有cvd病史的人死亡的概率}
+\NormalTok{p7 <-}\StringTok{ }\KeywordTok{ProbFactor}\NormalTok{(p1_}\DecValTok{0}\NormalTok{, }\FloatTok{1.37}\NormalTok{)  }\CommentTok{##有cvd病史复发cvd的概率}
+
+\NormalTok{n_state=}\DecValTok{4}
+\NormalTok{names_state=}\KeywordTok{c}\NormalTok{(}\StringTok{"s1"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\StringTok{"s4"}\NormalTok{)}
+\NormalTok{n_population=}\DecValTok{14}
+\NormalTok{names_population=}\KeywordTok{c}\NormalTok{(}\StringTok{"m_40"}\NormalTok{,}\StringTok{"m_45"}\NormalTok{,}\StringTok{"m_50"}\NormalTok{,}\StringTok{"m_55"}\NormalTok{,}\StringTok{"m_60"}\NormalTok{,}\StringTok{"m_65"}\NormalTok{,}\StringTok{"m_70"}\NormalTok{,}\StringTok{"f_40"}\NormalTok{,}\StringTok{"f_45"}\NormalTok{,}\StringTok{"f_50"}\NormalTok{,}\StringTok{"f_55"}\NormalTok{,}\StringTok{"f_60"}\NormalTok{,}\StringTok{"f_65"}\NormalTok{,}\StringTok{"f_70"}\NormalTok{)}
+
+\NormalTok{a_P<-}\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(n_state,n_state,}\DecValTok{10}\NormalTok{,n_population),}
+           \DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(names_state,names_state,}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))}
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##s1到s2状态的概率}
+\NormalTok{p2 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##s1到s3的概率}
+\NormalTok{p4 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##s1维持在s1的概率}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{p8 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\KeywordTok{runif}\NormalTok{(}\DecValTok{140}\NormalTok{,}\DataTypeTok{min=}\FloatTok{0.02}\NormalTok{,}\DataTypeTok{max=}\FloatTok{0.1}\NormalTok{),}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##cvd发作急性死亡概率}
+\CommentTok{###这里设定每个层的人群，在每一年的循环中，急性死亡的概率都是不同的，因此产生140个随机数，取值服从2%~10%的均匀分布}
+\NormalTok{p5 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##s2到s4的概率}
+\NormalTok{p6 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))  }\CommentTok{##s2维持在s2的概率}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{ }
+  \ControlFlowTok{if}\NormalTok{ (i}\OperatorTok{==}\DecValTok{7} \OperatorTok{|}\StringTok{ }\NormalTok{i}\OperatorTok{==}\DecValTok{14}\NormalTok{)\{}
+    \CommentTok{##10年都是i，后五年无法增加，因为少了一个年龄段的率}
+\NormalTok{    a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-p3[i]}
+\NormalTok{    a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-p3[i]}
+    \ControlFlowTok{for}\NormalTok{ ( j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{)\{}
+\NormalTok{      p2[j,i]<-p2_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{+}\NormalTok{p1_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{*}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p1[j,i]<-p1_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i])}
+\NormalTok{      p4[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p1[j,i]}\OperatorTok{-}\NormalTok{p2[j,i]}\OperatorTok{-}\NormalTok{p3[i]}
+\NormalTok{      p5[j,i]<-p5_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{+}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p6[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p5[j,i]}\OperatorTok{-}\NormalTok{p3[i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p1[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p2[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s1"}\NormalTok{,j,i]<-p4[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p6[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p5[j,i]}
+\NormalTok{    \}}
+\NormalTok{    a_P[}\StringTok{"s3"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-}\DecValTok{1}
+\NormalTok{    a_P[}\StringTok{"s4"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-}\DecValTok{1}
+\NormalTok{  \}}
+  \ControlFlowTok{else}\NormalTok{\{}
+    \CommentTok{###前5年}
+\NormalTok{    a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{,i]<-p3[i]}
+\NormalTok{    a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{,i]<-p3[i]}
+    \ControlFlowTok{for}\NormalTok{ ( j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)\{}
+\NormalTok{      p2[j,i]<-p2_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{+}\NormalTok{p1_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{*}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p1[j,i]<-p1_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i])}
+\NormalTok{      p4[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p1[j,i]}\OperatorTok{-}\NormalTok{p2[j,i]}\OperatorTok{-}\NormalTok{p3[i]}
+\NormalTok{      p5[j,i]<-p5_}\DecValTok{0}\NormalTok{[i]}\OperatorTok{+}\NormalTok{p7[i]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p6[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p5[j,i]}\OperatorTok{-}\NormalTok{p3[i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p1[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p2[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s1"}\NormalTok{,j,i]<-p4[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p6[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p5[j,i]}
+\NormalTok{    \}}
+\NormalTok{    a_P[}\StringTok{"s3"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{,i]<-}\DecValTok{1}
+\NormalTok{    a_P[}\StringTok{"s4"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{,i]<-}\DecValTok{1}
+    
+    \CommentTok{##后5年}
+\NormalTok{    a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-p3[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}
+\NormalTok{    a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-p3[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}
+    \ControlFlowTok{for}\NormalTok{ ( j }\ControlFlowTok{in} \DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{)\{}
+\NormalTok{      p2[j,i]<-p2_}\DecValTok{0}\NormalTok{[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{p1_}\DecValTok{0}\NormalTok{[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{p7[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p1[j,i]<-p1_}\DecValTok{0}\NormalTok{[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{p7[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{p8[j,i])}
+\NormalTok{      p4[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p1[j,i]}\OperatorTok{-}\NormalTok{p2[j,i]}\OperatorTok{-}\NormalTok{p3[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}
+\NormalTok{      p5[j,i]<-p5_}\DecValTok{0}\NormalTok{[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{p7[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{      p6[j,i]<-}\DecValTok{1}\OperatorTok{-}\NormalTok{p5[j,i]}\OperatorTok{-}\NormalTok{p3[i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p1[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p2[j,i]}
+\NormalTok{      a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s1"}\NormalTok{,j,i]<-p4[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i]<-p6[j,i]}
+\NormalTok{      a_P[}\StringTok{"s2"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,j,i]<-p5[j,i]}
+\NormalTok{    \}}
+\NormalTok{    a_P[}\StringTok{"s3"}\NormalTok{,}\StringTok{"s3"}\NormalTok{,}\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-}\DecValTok{1}
+\NormalTok{    a_P[}\StringTok{"s4"}\NormalTok{,}\StringTok{"s4"}\NormalTok{,}\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{,i]<-}\DecValTok{1}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\NormalTok{a_P}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , 1, m_40
+## 
+##         s1          s2          s3           s4
+## s1 0.99281 0.003879602 0.002490893 0.0008195143
+## s2 0.00000 0.985281955 0.002490893 0.0122271526
+## s3 0.00000 0.000000000 1.000000000 0.0000000000
+## s4 0.00000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 2, m_40
+## 
+##         s1          s2          s3         s4
+## s1 0.99281 0.003879426 0.002490893 0.00081969
+## s2 0.00000 0.985236677 0.002490893 0.01227243
+## s3 0.00000 0.000000000 1.000000000 0.00000000
+## s4 0.00000 0.000000000 0.000000000 1.00000000
+## 
+## , , 3, m_40
+## 
+##         s1          s2          s3           s4
+## s1 0.99281 0.003879095 0.002490893 0.0008200208
+## s2 0.00000 0.985151429 0.002490893 0.0123576781
+## s3 0.00000 0.000000000 1.000000000 0.0000000000
+## s4 0.00000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 4, m_40
+## 
+##         s1          s2          s3           s4
+## s1 0.99281 0.003878543 0.002490893 0.0008205734
+## s2 0.00000 0.985009008 0.002490893 0.0125000990
+## s3 0.00000 0.000000000 1.000000000 0.0000000000
+## s4 0.00000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 5, m_40
+## 
+##         s1          s2          s3           s4
+## s1 0.99281 0.003879707 0.002490893 0.0008194091
+## s2 0.00000 0.985309061 0.002490893 0.0122000462
+## s3 0.00000 0.000000000 1.000000000 0.0000000000
+## s4 0.00000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 6, m_40
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006700764 0.00339323 0.001344749
+## s2 0.0000000 0.976036421 0.00339323 0.021472687
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 7, m_40
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006700537 0.00339323 0.001344977
+## s2 0.0000000 0.976002484 0.00339323 0.021506623
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 8, m_40
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006701932 0.00339323 0.001343581
+## s2 0.0000000 0.976210624 0.00339323 0.021298484
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 9, m_40
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006702088 0.00339323 0.001343425
+## s2 0.0000000 0.976233855 0.00339323 0.021275253
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 10, m_40
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006704878 0.00339323 0.001340636
+## s2 0.0000000 0.976649821 0.00339323 0.020859286
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 1, m_45
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006704169 0.00339323 0.001341345
+## s2 0.0000000 0.975641764 0.00339323 0.020965006
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 2, m_45
+## 
+##           s1          s2         s3         s4
+## s1 0.9885613 0.006704314 0.00339323 0.00134120
+## s2 0.0000000 0.975663334 0.00339323 0.02094344
+## s3 0.0000000 0.000000000 1.00000000 0.00000000
+## s4 0.0000000 0.000000000 0.00000000 1.00000000
+## 
+## , , 3, m_45
+## 
+##           s1          s2         s3         s4
+## s1 0.9885613 0.006701803 0.00339323 0.00134371
+## s2 0.0000000 0.975289058 0.00339323 0.02131771
+## s3 0.0000000 0.000000000 1.00000000 0.00000000
+## s4 0.0000000 0.000000000 0.00000000 1.00000000
+## 
+## , , 4, m_45
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006703293 0.00339323 0.001342221
+## s2 0.0000000 0.975511160 0.00339323 0.021095611
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 5, m_45
+## 
+##           s1          s2         s3          s4
+## s1 0.9885613 0.006701396 0.00339323 0.001344117
+## s2 0.0000000 0.975228335 0.00339323 0.021378435
+## s3 0.0000000 0.000000000 1.00000000 0.000000000
+## s4 0.0000000 0.000000000 0.00000000 1.000000000
+## 
+## , , 6, m_45
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049938 0.004938764 0.002308367
+## s2 0.0000000 0.96367725 0.004938764 0.032929516
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 7, m_45
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049673 0.004938764 0.002311018
+## s2 0.0000000 0.96342495 0.004938764 0.033181821
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 8, m_45
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049342 0.004938764 0.002314325
+## s2 0.0000000 0.96311027 0.004938764 0.033496500
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 9, m_45
+## 
+##           s1        s2          s3          s4
+## s1 0.9822535 0.0105008 0.004938764 0.002306948
+## s2 0.0000000 0.9638122 0.004938764 0.032794525
+## s3 0.0000000 0.0000000 1.000000000 0.000000000
+## s4 0.0000000 0.0000000 0.000000000 1.000000000
+## 
+## , , 10, m_45
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049601 0.004938764 0.002311739
+## s2 0.0000000 0.96335631 0.004938764 0.033250458
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 1, m_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049411 0.004938764 0.002313635
+## s2 0.0000000 0.96163036 0.004938764 0.033430876
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 2, m_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01050283 0.004938764 0.002304924
+## s2 0.0000000 0.96245933 0.004938764 0.032601909
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 3, m_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01049753 0.004938764 0.002310223
+## s2 0.0000000 0.96195507 0.004938764 0.033106165
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 4, m_50
+## 
+##           s1         s2          s3         s4
+## s1 0.9822535 0.01050387 0.004938764 0.00230388
+## s2 0.0000000 0.96255867 0.004938764 0.03250257
+## s3 0.0000000 0.00000000 1.000000000 0.00000000
+## s4 0.0000000 0.00000000 0.000000000 1.00000000
+## 
+## , , 5, m_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9822535 0.01050216 0.004938764 0.002305588
+## s2 0.0000000 0.96239614 0.004938764 0.032665098
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 6, m_50
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515872 0.00725555 0.003674257
+## s2 0.0000000 0.94813980 0.00725555 0.046921431
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 7, m_50
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01516808 0.00725555 0.003664902
+## s2 0.0000000 0.94875624 0.00725555 0.046304998
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 8, m_50
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515882 0.00725555 0.003674163
+## s2 0.0000000 0.94814597 0.00725555 0.046915269
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 9, m_50
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01514659 0.00725555 0.003686393
+## s2 0.0000000 0.94734004 0.00725555 0.047721199
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 10, m_50
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515987 0.00725555 0.003673108
+## s2 0.0000000 0.94821549 0.00725555 0.046845742
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 1, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515631 0.00725555 0.003676665
+## s2 0.0000000 0.94566430 0.00725555 0.047080145
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 2, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515336 0.00725555 0.003679613
+## s2 0.0000000 0.94547000 0.00725555 0.047274450
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 3, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01515603 0.00725555 0.003676953
+## s2 0.0000000 0.94564535 0.00725555 0.047099101
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 4, m_55
+## 
+##           s1         s2         s3         s4
+## s1 0.9739115 0.01516374 0.00725555 0.00366924
+## s2 0.0000000 0.94615362 0.00725555 0.04659083
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 5, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9739115 0.01514765 0.00725555 0.003685331
+## s2 0.0000000 0.94509324 0.00725555 0.047651212
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 6, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178845 0.01109697 0.006431151
+## s2 0.0000000 0.92544974 0.01109697 0.067294712
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 7, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178193 0.01109697 0.006437671
+## s2 0.0000000 0.92515115 0.01109697 0.067593304
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 8, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02181751 0.01109697 0.006402094
+## s2 0.0000000 0.92678045 0.01109697 0.065964001
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 9, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178559 0.01109697 0.006434015
+## s2 0.0000000 0.92531858 0.01109697 0.067425865
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 10, m_55
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02180178 0.01109697 0.006417819
+## s2 0.0000000 0.92606033 0.01109697 0.066684124
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 1, m_60
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178055 0.01109697 0.006439056
+## s2 0.0000000 0.92124632 0.01109697 0.067656707
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 2, m_60
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178956 0.01109697 0.006430042
+## s2 0.0000000 0.92165914 0.01109697 0.067243892
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 3, m_60
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02178252 0.01109697 0.006437085
+## s2 0.0000000 0.92133657 0.01109697 0.067566460
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 4, m_60
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02179444 0.01109697 0.006425167
+## s2 0.0000000 0.92188236 0.01109697 0.067020674
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 5, m_60
+## 
+##           s1         s2         s3          s4
+## s1 0.9606834 0.02179564 0.01109697 0.006423959
+## s2 0.0000000 0.92193771 0.01109697 0.066965319
+## s3 0.0000000 0.00000000 1.00000000 0.000000000
+## s4 0.0000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 6, m_60
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03040022 0.01680322 0.01119783
+## s2 0.0000000 0.89607237 0.01680322 0.09283066
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 7, m_60
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03047747 0.01680322 0.01112058
+## s2 0.0000000 0.89860488 0.01680322 0.09029816
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 8, m_60
+## 
+##           s1        s2         s3         s4
+## s1 0.9415987 0.0304317 0.01680322 0.01116636
+## s2 0.0000000 0.8971043 0.01680322 0.09179876
+## s3 0.0000000 0.0000000 1.00000000 0.00000000
+## s4 0.0000000 0.0000000 0.00000000 1.00000000
+## 
+## , , 9, m_60
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03040597 0.01680322 0.01119208
+## s2 0.0000000 0.89626095 0.01680322 0.09264208
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 10, m_60
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03040996 0.01680322 0.01118809
+## s2 0.0000000 0.89639181 0.01680322 0.09251122
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 1, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03043166 0.01680322 0.01116639
+## s2 0.0000000 0.89139673 0.01680322 0.09180005
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 2, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03039297 0.01680322 0.01120508
+## s2 0.0000000 0.89012856 0.01680322 0.09306821
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 3, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03043564 0.01680322 0.01116241
+## s2 0.0000000 0.89152739 0.01680322 0.09166939
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 4, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9415987 0.03045514 0.01680322 0.01114291
+## s2 0.0000000 0.89216645 0.01680322 0.09103033
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 5, m_65
+## 
+##           s1        s2         s3         s4
+## s1 0.9415987 0.0304727 0.01680322 0.01112535
+## s2 0.0000000 0.8927421 0.01680322 0.09045469
+## s3 0.0000000 0.0000000 1.00000000 0.00000000
+## s4 0.0000000 0.0000000 0.00000000 1.00000000
+## 
+## , , 6, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04258406 0.02596204 0.01984836
+## s2 0.0000000 0.85954760 0.02596204 0.12364918
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 7, m_65
+## 
+##           s1        s2         s3         s4
+## s1 0.9116055 0.0425415 0.02596204 0.01989092
+## s2 0.0000000 0.8585498 0.02596204 0.12464694
+## s3 0.0000000 0.0000000 1.00000000 0.00000000
+## s4 0.0000000 0.0000000 0.00000000 1.00000000
+## 
+## , , 8, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04250178 0.02596204 0.01993064
+## s2 0.0000000 0.85761854 0.02596204 0.12557823
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 9, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04247363 0.02596204 0.01995878
+## s2 0.0000000 0.85695874 0.02596204 0.12623804
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 10, m_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04252372 0.02596204 0.01990869
+## s2 0.0000000 0.85813308 0.02596204 0.12506370
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 1, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04242439 0.02596204 0.02000803
+## s2 0.0000000 0.84664539 0.02596204 0.12739257
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 2, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04254595 0.02596204 0.01988647
+## s2 0.0000000 0.84949535 0.02596204 0.12454262
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 3, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04251347 0.02596204 0.01991895
+## s2 0.0000000 0.84873387 0.02596204 0.12530409
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 4, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04253833 0.02596204 0.01989408
+## s2 0.0000000 0.84931682 0.02596204 0.12472114
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 5, m_70
+## 
+##           s1         s2         s3        s4
+## s1 0.9116055 0.04247582 0.02596204 0.0199566
+## s2 0.0000000 0.84785117 0.02596204 0.1261868
+## s3 0.0000000 0.00000000 1.00000000 0.0000000
+## s4 0.0000000 0.00000000 0.00000000 1.0000000
+## 
+## , , 6, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04255293 0.02596204 0.01987948
+## s2 0.0000000 0.84965912 0.02596204 0.12437884
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 7, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04250965 0.02596204 0.01992277
+## s2 0.0000000 0.84864422 0.02596204 0.12539374
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 8, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04245316 0.02596204 0.01997926
+## s2 0.0000000 0.84731990 0.02596204 0.12671806
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 9, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04258704 0.02596204 0.01984537
+## s2 0.0000000 0.85045883 0.02596204 0.12357914
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 10, m_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9116055 0.04243176 0.02596204 0.02000065
+## s2 0.0000000 0.84681822 0.02596204 0.12721974
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 1, f_40
+## 
+##          s1          s2          s3           s4
+## s1 0.993978 0.004533362 0.001136354 0.0003522638
+## s2 0.000000 0.984557862 0.001136354 0.0143057843
+## s3 0.000000 0.000000000 1.000000000 0.0000000000
+## s4 0.000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 2, f_40
+## 
+##          s1          s2          s3           s4
+## s1 0.993978 0.004532236 0.001136354 0.0003533896
+## s2 0.000000 0.984309595 0.001136354 0.0145540512
+## s3 0.000000 0.000000000 1.000000000 0.0000000000
+## s4 0.000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 3, f_40
+## 
+##          s1          s2          s3           s4
+## s1 0.993978 0.004533345 0.001136354 0.0003522809
+## s2 0.000000 0.984554086 0.001136354 0.0143095604
+## s3 0.000000 0.000000000 1.000000000 0.0000000000
+## s4 0.000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 4, f_40
+## 
+##          s1          s2          s3           s4
+## s1 0.993978 0.004533374 0.001136354 0.0003522519
+## s2 0.000000 0.984560491 0.001136354 0.0143031556
+## s3 0.000000 0.000000000 1.000000000 0.0000000000
+## s4 0.000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 5, f_40
+## 
+##          s1          s2          s3           s4
+## s1 0.993978 0.004533053 0.001136354 0.0003525727
+## s2 0.000000 0.984489749 0.001136354 0.0143738976
+## s3 0.000000 0.000000000 1.000000000 0.0000000000
+## s4 0.000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 6, f_40
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007062658 0.001618689 0.0006490324
+## s2 0.0000000 0.976251714 0.001618689 0.0226119326
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 7, f_40
+## 
+##           s1         s2          s3           s4
+## s1 0.9906696 0.00706281 0.001618689 0.0006488802
+## s2 0.0000000 0.97627324 0.001618689 0.0225904052
+## s3 0.0000000 0.00000000 1.000000000 0.0000000000
+## s4 0.0000000 0.00000000 0.000000000 1.0000000000
+## 
+## , , 8, f_40
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007065401 0.001618689 0.0006462892
+## s2 0.0000000 0.976639785 0.001618689 0.0222238608
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 9, f_40
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007063285 0.001618689 0.0006484049
+## s2 0.0000000 0.976340483 0.001618689 0.0225231632
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 10, f_40
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007062284 0.001618689 0.0006494061
+## s2 0.0000000 0.976198844 0.001618689 0.0226648025
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 1, f_45
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007065157 0.001618689 0.0006465332
+## s2 0.0000000 0.976122933 0.001618689 0.0222583786
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 2, f_45
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007063639 0.001618689 0.0006480509
+## s2 0.0000000 0.975908226 0.001618689 0.0224730856
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 3, f_45
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007065346 0.001618689 0.0006463438
+## s2 0.0000000 0.976149720 0.001618689 0.0222315918
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 4, f_45
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007065754 0.001618689 0.0006459361
+## s2 0.0000000 0.976207398 0.001618689 0.0221739135
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 5, f_45
+## 
+##           s1          s2          s3           s4
+## s1 0.9906696 0.007063396 0.001618689 0.0006482944
+## s2 0.0000000 0.975873783 0.001618689 0.0225075281
+## s3 0.0000000 0.000000000 1.000000000 0.0000000000
+## s4 0.0000000 0.000000000 0.000000000 1.0000000000
+## 
+## , , 6, f_45
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007681 0.00247194 0.001210297
+## s2 0.000000 0.96708588 0.00247194 0.031295433
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 7, f_45
+## 
+##          s1         s2         s3         s4
+## s1 0.986241 0.01007117 0.00247194 0.00121594
+## s2 0.000000 0.96652617 0.00247194 0.03185514
+## s3 0.000000 0.00000000 1.00000000 0.00000000
+## s4 0.000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 8, f_45
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007771 0.00247194 0.001209398
+## s2 0.000000 0.96717505 0.00247194 0.031206263
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 9, f_45
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007633 0.00247194 0.001210772
+## s2 0.000000 0.96703877 0.00247194 0.031342546
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 10, f_45
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007747 0.00247194 0.001209638
+## s2 0.000000 0.96715126 0.00247194 0.031230055
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 1, f_50
+## 
+##          s1        s2         s3          s4
+## s1 0.986241 0.0100764 0.00247194 0.001210707
+## s2 0.000000 0.9661920 0.00247194 0.031336096
+## s3 0.000000 0.0000000 1.00000000 0.000000000
+## s4 0.000000 0.0000000 0.00000000 1.000000000
+## 
+## , , 2, f_50
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007841 0.00247194 0.001208702
+## s2 0.000000 0.96639088 0.00247194 0.031137176
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 3, f_50
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007193 0.00247194 0.001215176
+## s2 0.000000 0.96574869 0.00247194 0.031779368
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 4, f_50
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01006933 0.00247194 0.001217773
+## s2 0.000000 0.96549111 0.00247194 0.032036949
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 5, f_50
+## 
+##          s1         s2         s3          s4
+## s1 0.986241 0.01007041 0.00247194 0.001216693
+## s2 0.000000 0.96559829 0.00247194 0.031929775
+## s3 0.000000 0.00000000 1.00000000 0.000000000
+## s4 0.000000 0.00000000 0.00000000 1.000000000
+## 
+## , , 6, f_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01361887 0.003698145 0.002033222
+## s2 0.0000000 0.95460911 0.003698145 0.042918949
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 7, f_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362581 0.003698145 0.002026283
+## s2 0.0000000 0.95511787 0.003698145 0.042410190
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 8, f_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362673 0.003698145 0.002025366
+## s2 0.0000000 0.95518509 0.003698145 0.042342971
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 9, f_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01361859 0.003698145 0.002033497
+## s2 0.0000000 0.95458894 0.003698145 0.042939121
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 10, f_50
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362277 0.003698145 0.002029319
+## s2 0.0000000 0.95489526 0.003698145 0.042632800
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 1, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362176 0.003698145 0.002030329
+## s2 0.0000000 0.95359499 0.003698145 0.042706861
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 2, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362788 0.003698145 0.002024212
+## s2 0.0000000 0.95404350 0.003698145 0.042258355
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 3, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362956 0.003698145 0.002022529
+## s2 0.0000000 0.95416686 0.003698145 0.042134990
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 4, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01361491 0.003698145 0.002037186
+## s2 0.0000000 0.95309230 0.003698145 0.043209560
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 5, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9806498 0.01362219 0.003698145 0.002029898
+## s2 0.0000000 0.95362657 0.003698145 0.042675281
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 6, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01808955 0.005832922 0.003881046
+## s2 0.0000000 0.94098605 0.005832922 0.055315810
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 7, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01809254 0.005832922 0.003878054
+## s2 0.0000000 0.94115130 0.005832922 0.055150551
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 8, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01808009 0.005832922 0.003890501
+## s2 0.0000000 0.94046385 0.005832922 0.055838006
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 9, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01806418 0.005832922 0.003906417
+## s2 0.0000000 0.93958477 0.005832922 0.056717084
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 10, f_55
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01807579 0.005832922 0.003894807
+## s2 0.0000000 0.94022604 0.005832922 0.056075819
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 1, f_60
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01806232 0.005832922 0.003908277
+## s2 0.0000000 0.93734730 0.005832922 0.056819777
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 2, f_60
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01807104 0.005832922 0.003899555
+## s2 0.0000000 0.93782902 0.005832922 0.056338054
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 3, f_60
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01808442 0.005832922 0.003886168
+## s2 0.0000000 0.93856836 0.005832922 0.055598717
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 4, f_60
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01808176 0.005832922 0.003888836
+## s2 0.0000000 0.93842102 0.005832922 0.055746059
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 5, f_60
+## 
+##           s1         s2          s3          s4
+## s1 0.9721965 0.01809187 0.005832922 0.003878726
+## s2 0.0000000 0.93897939 0.005832922 0.055187687
+## s3 0.0000000 0.00000000 1.000000000 0.000000000
+## s4 0.0000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 6, f_60
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02344859 0.009019082 0.006987323
+## s2 0.000000 0.92375679 0.009019082 0.070410287
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 7, f_60
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02340657 0.009019082 0.007029349
+## s2 0.000000 0.92196576 0.009019082 0.072201320
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 8, f_60
+## 
+##          s1        s2          s3          s4
+## s1 0.960545 0.0234432 0.009019082 0.006992714
+## s2 0.000000 0.9235271 0.009019082 0.070640019
+## s3 0.000000 0.0000000 1.000000000 0.000000000
+## s4 0.000000 0.0000000 0.000000000 1.000000000
+## 
+## , , 9, f_60
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02342267 0.009019082 0.007013239
+## s2 0.000000 0.92265231 0.009019082 0.071514772
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 10, f_60
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02341108 0.009019082 0.007024834
+## s2 0.000000 0.92215816 0.009019082 0.072008918
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 1, f_65
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02339004 0.009019082 0.007045876
+## s2 0.000000 0.91807523 0.009019082 0.072905693
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 2, f_65
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02341973 0.009019082 0.007016189
+## s2 0.000000 0.91934043 0.009019082 0.071640488
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 3, f_65
+## 
+##          s1        s2          s3          s4
+## s1 0.960545 0.0234204 0.009019082 0.007015516
+## s2 0.000000 0.9193691 0.009019082 0.071611821
+## s3 0.000000 0.0000000 1.000000000 0.000000000
+## s4 0.000000 0.0000000 0.000000000 1.000000000
+## 
+## , , 4, f_65
+## 
+##          s1        s2          s3          s4
+## s1 0.960545 0.0234390 0.009019082 0.006996917
+## s2 0.000000 0.9201618 0.009019082 0.070819146
+## s3 0.000000 0.0000000 1.000000000 0.000000000
+## s4 0.000000 0.0000000 0.000000000 1.000000000
+## 
+## , , 5, f_65
+## 
+##          s1         s2          s3          s4
+## s1 0.960545 0.02340422 0.009019082 0.007031697
+## s2 0.000000 0.91867952 0.009019082 0.072301403
+## s3 0.000000 0.00000000 1.000000000 0.000000000
+## s4 0.000000 0.00000000 0.000000000 1.000000000
+## 
+## , , 6, f_65
+## 
+##           s1        s2         s3         s4
+## s1 0.9385563 0.0332539 0.01479644 0.01339335
+## s2 0.0000000 0.8912902 0.01479644 0.09969071
+## s3 0.0000000 0.0000000 1.00000000 0.00000000
+## s4 0.0000000 0.0000000 0.00000000 1.00000000
+## 
+## , , 7, f_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03324701 0.01479644 0.01340024
+## s2 0.0000000 0.89108349 0.01479644 0.09989743
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 8, f_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03328354 0.01479644 0.01336370
+## s2 0.0000000 0.89217939 0.01479644 0.09880153
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 9, f_65
+## 
+##           s1        s2         s3         s4
+## s1 0.9385563 0.0332810 0.01479644 0.01336624
+## s2 0.0000000 0.8921032 0.01479644 0.09887774
+## s3 0.0000000 0.0000000 1.00000000 0.00000000
+## s4 0.0000000 0.0000000 0.00000000 1.00000000
+## 
+## , , 10, f_65
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03323683 0.01479644 0.01341041
+## s2 0.0000000 0.89077834 0.01479644 0.10020258
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 1, f_70
+## 
+##           s1         s2         s3        s4
+## s1 0.9385563 0.03323934 0.01479644 0.0134079
+## s2 0.0000000 0.88507620 0.01479644 0.1001274
+## s3 0.0000000 0.00000000 1.00000000 0.0000000
+## s4 0.0000000 0.00000000 0.00000000 1.0000000
+## 
+## , , 2, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03329924 0.01479644 0.01334800
+## s2 0.0000000 0.88687298 0.01479644 0.09833058
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 3, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03330424 0.01479644 0.01334301
+## s2 0.0000000 0.88702286 0.01479644 0.09818070
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 4, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03323117 0.01479644 0.01341608
+## s2 0.0000000 0.88483104 0.01479644 0.10037252
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 5, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03319677 0.01479644 0.01345047
+## s2 0.0000000 0.88379940 0.01479644 0.10140415
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 6, f_70
+## 
+##           s1         s2         s3        s4
+## s1 0.9385563 0.03323655 0.01479644 0.0134107
+## s2 0.0000000 0.88499239 0.01479644 0.1002112
+## s3 0.0000000 0.00000000 1.00000000 0.0000000
+## s4 0.0000000 0.00000000 0.00000000 1.0000000
+## 
+## , , 7, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03324102 0.01479644 0.01340622
+## s2 0.0000000 0.88512663 0.01479644 0.10007693
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 8, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03324522 0.01479644 0.01340203
+## s2 0.0000000 0.88525250 0.01479644 0.09995106
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 9, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03318998 0.01479644 0.01345727
+## s2 0.0000000 0.88359555 0.01479644 0.10160801
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+## 
+## , , 10, f_70
+## 
+##           s1         s2         s3         s4
+## s1 0.9385563 0.03324743 0.01479644 0.01339981
+## s2 0.0000000 0.88531886 0.01479644 0.09988470
+## s3 0.0000000 0.00000000 1.00000000 0.00000000
+## s4 0.0000000 0.00000000 0.00000000 1.00000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{###2.计算CVD事件数、CVD死亡数和全因死亡数、QALY、获得生命年}
+\CommentTok{###1)人群分布}
+\NormalTok{population<-}\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{,}\DecValTok{45}\NormalTok{,}\DecValTok{50}\NormalTok{,}\DecValTok{55}\NormalTok{,}\DecValTok{60}\NormalTok{,}\DecValTok{65}\NormalTok{,}\DecValTok{70}\NormalTok{,}\DecValTok{40}\NormalTok{,}\DecValTok{45}\NormalTok{,}\DecValTok{50}\NormalTok{,}\DecValTok{55}\NormalTok{,}\DecValTok{60}\NormalTok{,}\DecValTok{65}\NormalTok{,}\DecValTok{70}\NormalTok{,}\DecValTok{229}\NormalTok{,}\DecValTok{444}\NormalTok{,}\DecValTok{422}\NormalTok{,}\DecValTok{410}\NormalTok{,}\DecValTok{322}\NormalTok{,}\DecValTok{160}\NormalTok{,}\DecValTok{116}\NormalTok{,}\DecValTok{498}\NormalTok{,}\DecValTok{856}\NormalTok{,}\DecValTok{822}\NormalTok{,}\DecValTok{842}\NormalTok{,}\DecValTok{519}\NormalTok{,}\DecValTok{394}\NormalTok{,}\DecValTok{187}\NormalTok{,}
+                     \DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{),}\DataTypeTok{ncol=}\DecValTok{3}\NormalTok{,}\DataTypeTok{nrow=}\DecValTok{14}\NormalTok{,}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{,}\KeywordTok{c}\NormalTok{(}\StringTok{"age"}\NormalTok{,}\StringTok{"num"}\NormalTok{,}\StringTok{"sex"}\NormalTok{)),}\DataTypeTok{byrow=}\NormalTok{F)}
+\NormalTok{population  }\CommentTok{##sex:1-male 2-female}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    age num sex
+## 1   40 229   1
+## 2   45 444   1
+## 3   50 422   1
+## 4   55 410   1
+## 5   60 322   1
+## 6   65 160   1
+## 7   70 116   1
+## 8   40 498   2
+## 9   45 856   2
+## 10  50 822   2
+## 11  55 842   2
+## 12  60 519   2
+## 13  65 394   2
+## 14  70 187   2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{###2)initial state}
+\NormalTok{s_start<-}\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\DecValTok{14}\NormalTok{,}\DataTypeTok{ncol=}\DecValTok{4}\NormalTok{,}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{,names_state))}
+\NormalTok{s_start[,}\DecValTok{1}\NormalTok{]<-population[}\DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{,}\DecValTok{2}\NormalTok{]}
+\NormalTok{s_start[,}\DecValTok{2}\NormalTok{]<-}\DecValTok{0}
+\NormalTok{s_start[,}\DecValTok{3}\NormalTok{]<-}\DecValTok{0}
+\NormalTok{s_start[,}\DecValTok{4}\NormalTok{]<-}\DecValTok{0}
+\NormalTok{s_start}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     s1 s2 s3 s4
+## 1  229  0  0  0
+## 2  444  0  0  0
+## 3  422  0  0  0
+## 4  410  0  0  0
+## 5  322  0  0  0
+## 6  160  0  0  0
+## 7  116  0  0  0
+## 8  498  0  0  0
+## 9  856  0  0  0
+## 10 822  0  0  0
+## 11 842  0  0  0
+## 12 519  0  0  0
+## 13 394  0  0  0
+## 14 187  0  0  0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_M<-}\KeywordTok{array}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{14}\NormalTok{),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_state,names_population))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{) \{}
+\NormalTok{  m_M[}\DecValTok{1}\NormalTok{,,i]<-s_start[i,]}
+\NormalTok{\}}
+\NormalTok{m_M}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##     s1 s2 s3 s4
+## 1  229  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_45
+## 
+##     s1 s2 s3 s4
+## 1  444  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_50
+## 
+##     s1 s2 s3 s4
+## 1  422  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_55
+## 
+##     s1 s2 s3 s4
+## 1  410  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_60
+## 
+##     s1 s2 s3 s4
+## 1  322  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_65
+## 
+##     s1 s2 s3 s4
+## 1  160  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , m_70
+## 
+##     s1 s2 s3 s4
+## 1  116  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_40
+## 
+##     s1 s2 s3 s4
+## 1  498  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_45
+## 
+##     s1 s2 s3 s4
+## 1  856  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_50
+## 
+##     s1 s2 s3 s4
+## 1  822  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_55
+## 
+##     s1 s2 s3 s4
+## 1  842  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_60
+## 
+##     s1 s2 s3 s4
+## 1  519  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_65
+## 
+##     s1 s2 s3 s4
+## 1  394  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+## 
+## , , f_70
+## 
+##     s1 s2 s3 s4
+## 1  187  0  0  0
+## 2   NA NA NA NA
+## 3   NA NA NA NA
+## 4   NA NA NA NA
+## 5   NA NA NA NA
+## 6   NA NA NA NA
+## 7   NA NA NA NA
+## 8   NA NA NA NA
+## 9   NA NA NA NA
+## 10  NA NA NA NA
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{###3)记录10年中每个状态的人数，并计算CVD事件数、CVD死亡数和全因死亡数、QALY、获得生命年}
+\NormalTok{uti <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\FloatTok{0.9}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)  }\CommentTok{##s1~s4的效用赋值}
+\NormalTok{uti2 <-}\StringTok{ }\FloatTok{-0.038}  \CommentTok{##话说这个值怎么算出来的??}
+\NormalTok{year <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)}
+\NormalTok{n_cnew <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{14}\NormalTok{),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,}\StringTok{"num"}\NormalTok{,names_population))  }\CommentTok{##记录新发cvd人数}
+\NormalTok{n_clive <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{14}\NormalTok{),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,}\StringTok{"num"}\NormalTok{,names_population)) }\CommentTok{##记录首发或复发并存活后维持在cvd状态的人数}
+\NormalTok{n_cvd <-}\StringTok{ }\DecValTok{0} \CommentTok{##cvd发病数}
+\NormalTok{n_cd <-}\StringTok{ }\DecValTok{0}  \CommentTok{##因cvd死亡数}
+\NormalTok{n_nd <-}\StringTok{ }\DecValTok{0}  \CommentTok{##非cvd死亡数}
+\NormalTok{n_d <-}\StringTok{ }\DecValTok{0}   \CommentTok{##全死因死亡数}
+\NormalTok{qaly <-}\StringTok{ }\DecValTok{0}  \CommentTok{##质量调整生命年}
+\NormalTok{qaly_m <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{14}\NormalTok{),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_state,names_population))  }\CommentTok{##qaly数组}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{}
+\NormalTok{  qaly_m[}\DecValTok{1}\NormalTok{,,i]<-m_M[}\DecValTok{1}\NormalTok{,,i] }\OperatorTok{*}\StringTok{ }\NormalTok{uti  }\CommentTok{##计算第一年的qaly的情况}
+\NormalTok{\}                     }
+\NormalTok{lifeyear<-}\DecValTok{0}  \CommentTok{##获得生命年}
+\NormalTok{lifeyear_m<-}\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{14}\NormalTok{),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_state,names_population))  }\CommentTok{##获得生命年数组}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{}
+\NormalTok{  lifeyear_m[}\DecValTok{1}\NormalTok{,,i]<-m_M[}\DecValTok{1}\NormalTok{,,i]}\OperatorTok{*}\NormalTok{year}
+\NormalTok{\}}
+\NormalTok{qaly_m}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##     s1 s2 s3 s4
+## 1  229  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_45
+## 
+##     s1 s2 s3 s4
+## 1  444  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_50
+## 
+##     s1 s2 s3 s4
+## 1  422  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_55
+## 
+##     s1 s2 s3 s4
+## 1  410  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_60
+## 
+##     s1 s2 s3 s4
+## 1  322  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_65
+## 
+##     s1 s2 s3 s4
+## 1  160  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_70
+## 
+##     s1 s2 s3 s4
+## 1  116  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_40
+## 
+##     s1 s2 s3 s4
+## 1  498  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_45
+## 
+##     s1 s2 s3 s4
+## 1  856  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_50
+## 
+##     s1 s2 s3 s4
+## 1  822  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_55
+## 
+##     s1 s2 s3 s4
+## 1  842  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_60
+## 
+##     s1 s2 s3 s4
+## 1  519  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_65
+## 
+##     s1 s2 s3 s4
+## 1  394  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_70
+## 
+##     s1 s2 s3 s4
+## 1  187  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lifeyear_m}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##     s1 s2 s3 s4
+## 1  229  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_45
+## 
+##     s1 s2 s3 s4
+## 1  444  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_50
+## 
+##     s1 s2 s3 s4
+## 1  422  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_55
+## 
+##     s1 s2 s3 s4
+## 1  410  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_60
+## 
+##     s1 s2 s3 s4
+## 1  322  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_65
+## 
+##     s1 s2 s3 s4
+## 1  160  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , m_70
+## 
+##     s1 s2 s3 s4
+## 1  116  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_40
+## 
+##     s1 s2 s3 s4
+## 1  498  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_45
+## 
+##     s1 s2 s3 s4
+## 1  856  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_50
+## 
+##     s1 s2 s3 s4
+## 1  822  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_55
+## 
+##     s1 s2 s3 s4
+## 1  842  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_60
+## 
+##     s1 s2 s3 s4
+## 1  519  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_65
+## 
+##     s1 s2 s3 s4
+## 1  394  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+## 
+## , , f_70
+## 
+##     s1 s2 s3 s4
+## 1  187  0  0  0
+## 2    0  0  0  0
+## 3    0  0  0  0
+## 4    0  0  0  0
+## 5    0  0  0  0
+## 6    0  0  0  0
+## 7    0  0  0  0
+## 8    0  0  0  0
+## 9    0  0  0  0
+## 10   0  0  0  0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{####增加一个概率转换，即各人群中有cvd病史且复发存活的概率；}
+\NormalTok{p9 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{}
+  \ControlFlowTok{if}\NormalTok{ (i}\OperatorTok{==}\DecValTok{7} \OperatorTok{|}\StringTok{ }\NormalTok{i}\OperatorTok{==}\DecValTok{14}\NormalTok{)\{}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{)}
+\NormalTok{      p9[j,i]<-p7[i]}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{p8[j,i])}
+\NormalTok{  \}}
+  \ControlFlowTok{else}\NormalTok{ \{}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)\{}
+\NormalTok{      p9[j,i]<-p7[i]}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{p8[j,i])}
+\NormalTok{    \}}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{)\{}
+\NormalTok{      p9[j,i]<-p7[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{p8[j,i]}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{\}}
+\NormalTok{p9}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            m_40         m_45         m_50         m_55         m_60        m_65
+## 1  0.0050896665 0.0088307191 0.0129815809 0.0194624896 0.0271331668 0.038919928
+## 2  0.0050443883 0.0088522883 0.0138105480 0.0192681847 0.0275459814 0.037651766
+## 3  0.0049591409 0.0084780129 0.0133062915 0.0194435344 0.0272234129 0.039050591
+## 4  0.0048167200 0.0087001142 0.0139098862 0.0199518047 0.0277691990 0.039689648
+## 5  0.0051167729 0.0084172901 0.0137473590 0.0188914230 0.0278245541 0.040265289
+## 6  0.0008420031 0.0008578052 0.0010520435 0.0021804877 0.0034361505 0.001608279
+## 7  0.0008759398 0.0011101097 0.0004356107 0.0024790796 0.0009036431 0.002606041
+## 8  0.0006677999 0.0014247887 0.0010458810 0.0008497767 0.0024042497 0.003537334
+## 9  0.0006445693 0.0007228139 0.0018518117 0.0023116403 0.0032475658 0.004197141
+## 10 0.0002286027 0.0011787464 0.0009763545 0.0015698998 0.0031167057 0.003022800
+##          m_70         f_40         f_45         f_50         f_55         f_60
+## 1  0.05217461 0.0059098354 0.0091300685 0.0132217665 0.0172473946 0.0222232043
+## 2  0.05502457 0.0056615685 0.0089153615 0.0134206869 0.0176959004 0.0227049276
+## 3  0.05426309 0.0059060592 0.0091568553 0.0127784945 0.0178192653 0.0234442646
+## 4  0.05484605 0.0059124641 0.0092145336 0.0125209137 0.0167446958 0.0232969222
+## 5  0.05338039 0.0058417221 0.0088809190 0.0126280876 0.0172789741 0.0238552943
+## 6  0.05518834 0.0008826110 0.0004983519 0.0015578196 0.0009130854 0.0006707309
+## 7  0.05417345 0.0008610836 0.0010580623 0.0010490606 0.0007478266 0.0024617645
+## 8  0.05284912 0.0004945391 0.0004091817 0.0009818421 0.0014352812 0.0009004629
+## 9  0.05598805 0.0007938416 0.0005454647 0.0015779916 0.0023143597 0.0017752158
+## 10 0.05234744 0.0009354809 0.0004329740 0.0012716706 0.0016730951 0.0022693622
+##           f_65       f_70
+## 1  0.028703310 0.04214006
+## 2  0.029968514 0.04393684
+## 3  0.029997182 0.04408672
+## 4  0.030789857 0.04189490
+## 5  0.029307600 0.04086327
+## 6  0.002540632 0.04205625
+## 7  0.002747357 0.04219049
+## 8  0.001651458 0.04231636
+## 9  0.001727663 0.04065941
+## 10 0.003052503 0.04238272
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{###########################################################}
+
+\CommentTok{########增加一个概率转换，即各人群中无cvd的人cvd发病概率}
+\NormalTok{p10 <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{dim=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,n_population),}\DataTypeTok{dimnames=}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,names_population))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{}
+  \ControlFlowTok{if}\NormalTok{ (i}\OperatorTok{==}\DecValTok{7} \OperatorTok{|}\StringTok{ }\NormalTok{i}\OperatorTok{==}\DecValTok{14}\NormalTok{)\{}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{)}
+\NormalTok{      p10[j,i]<-p1_}\DecValTok{0}\NormalTok{[i]}
+\NormalTok{  \}}
+  \ControlFlowTok{else}\NormalTok{ \{}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)\{}
+\NormalTok{      p10[j,i]<-p1_}\DecValTok{0}\NormalTok{[i]}
+\NormalTok{    \}}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{)\{}
+\NormalTok{      p10[j,i]<-p1_}\DecValTok{0}\NormalTok{[i}\OperatorTok{+}\DecValTok{1}\NormalTok{]}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{\}}
+\NormalTok{p10}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           m_40        m_45       m_50       m_55       m_60       m_65
+## 1  0.003880452 0.006706411 0.01050840 0.01517469 0.02183606 0.03050504
+## 2  0.003880452 0.006706411 0.01050840 0.01517469 0.02183606 0.03050504
+## 3  0.003880452 0.006706411 0.01050840 0.01517469 0.02183606 0.03050504
+## 4  0.003880452 0.006706411 0.01050840 0.01517469 0.02183606 0.03050504
+## 5  0.003880452 0.006706411 0.01050840 0.01517469 0.02183606 0.03050504
+## 6  0.006706411 0.010508397 0.01517469 0.02183606 0.03050504 0.04265265
+## 7  0.006706411 0.010508397 0.01517469 0.02183606 0.03050504 0.04265265
+## 8  0.006706411 0.010508397 0.01517469 0.02183606 0.03050504 0.04265265
+## 9  0.006706411 0.010508397 0.01517469 0.02183606 0.03050504 0.04265265
+## 10 0.006706411 0.010508397 0.01517469 0.02183606 0.03050504 0.04265265
+##          m_70        f_40        f_45       f_50       f_55       f_60
+## 1  0.04265265 0.004534687 0.007068897 0.01008183 0.01364012 0.01810608
+## 2  0.04265265 0.004534687 0.007068897 0.01008183 0.01364012 0.01810608
+## 3  0.04265265 0.004534687 0.007068897 0.01008183 0.01364012 0.01810608
+## 4  0.04265265 0.004534687 0.007068897 0.01008183 0.01364012 0.01810608
+## 5  0.04265265 0.004534687 0.007068897 0.01008183 0.01364012 0.01810608
+## 6  0.04265265 0.007068897 0.010081834 0.01364012 0.01810608 0.02346433
+## 7  0.04265265 0.007068897 0.010081834 0.01364012 0.01810608 0.02346433
+## 8  0.04265265 0.007068897 0.010081834 0.01364012 0.01810608 0.02346433
+## 9  0.04265265 0.007068897 0.010081834 0.01364012 0.01810608 0.02346433
+## 10 0.04265265 0.007068897 0.010081834 0.01364012 0.01810608 0.02346433
+##          f_65      f_70
+## 1  0.02346433 0.0333386
+## 2  0.02346433 0.0333386
+## 3  0.02346433 0.0333386
+## 4  0.02346433 0.0333386
+## 5  0.02346433 0.0333386
+## 6  0.03333860 0.0333386
+## 7  0.03333860 0.0333386
+## 8  0.03333860 0.0333386
+## 9  0.03333860 0.0333386
+## 10 0.03333860 0.0333386
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{######################################################}
+
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{)\{}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{9}\NormalTok{)\{}
+\NormalTok{    m_M[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,,i]<-m_M[j,,i] }\OperatorTok{%*%}\StringTok{ }\NormalTok{a_P[,,j,i]}
+\NormalTok{    n_cnew[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,i]<-m_M[j,}\DecValTok{1}\NormalTok{,i] }\OperatorTok{*}\StringTok{ }\NormalTok{p10[j,i]   }\CommentTok{##新发cvd=s1人数*p9(无cvd发病概率)}
+\NormalTok{    n_clive[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,i]<-m_M[j,}\DecValTok{1}\NormalTok{,i]}\OperatorTok{*}\NormalTok{a_P[}\StringTok{"s1"}\NormalTok{,}\StringTok{"s2"}\NormalTok{,j,i] }\OperatorTok{+}\NormalTok{m_M[j,}\DecValTok{2}\NormalTok{,i]}\OperatorTok{*}\NormalTok{p9[j,i] }\CommentTok{##首发或复发cvd并存活的人数=s1人数*p1+s2人数*p9}
+\NormalTok{    qaly_m[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,,i]<-m_M[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,,i] }\OperatorTok{*}\StringTok{ }\NormalTok{uti}\OperatorTok{+}\NormalTok{n_clive[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,i]}\OperatorTok{*}\NormalTok{uti2 }\CommentTok{##qaly=等于四个状态的qaly之和+损失的qaly}
+\NormalTok{    lifeyear_m[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,,i]<-m_M[j}\OperatorTok{+}\DecValTok{1}\NormalTok{,,i]}\OperatorTok{*}\NormalTok{year}
+\NormalTok{  \}}
+\NormalTok{  n_cvd[i]<-}\KeywordTok{sum}\NormalTok{(n_cnew[}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,,i])}
+\NormalTok{  n_cd[i]<-m_M[}\DecValTok{10}\NormalTok{,}\DecValTok{4}\NormalTok{,i]}
+\NormalTok{  n_nd[i]<-}\StringTok{ }\NormalTok{m_M[}\DecValTok{10}\NormalTok{,}\DecValTok{3}\NormalTok{,i]}
+\NormalTok{  n_d[i]<-n_cd[i]}\OperatorTok{+}\NormalTok{n_nd[i]}
+\NormalTok{  qaly[i]<-}\KeywordTok{sum}\NormalTok{(qaly_m[}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,,i])}
+\NormalTok{  lifeyear[i]<-}\KeywordTok{sum}\NormalTok{(lifeyear_m[}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{,,i])}
+\NormalTok{\}}
+
+\NormalTok{m_M  }\CommentTok{##各人群各状态每个周期循环的人数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##          s1        s2        s3        s4
+## 1  229.0000 0.0000000 0.0000000 0.0000000
+## 2  227.3535 0.8884289 0.5704144 0.1876688
+## 3  225.7188 1.7573138 1.1389405 0.3849313
+## 4  224.0959 2.6068050 1.7055591 0.5917417
+## 5  222.4846 3.4368919 2.2702512 0.8082142
+## 6  220.8850 4.2495760 2.8329974 1.0324504
+## 7  218.3583 5.6278391 3.5969307 1.4207351
+## 8  215.8606 6.9559029 4.3569673 1.8354579
+## 9  213.3914 8.2371094 5.1130349 2.2736343
+## 10 210.9505 9.4715131 5.8650714 2.7355563
+## 
+## , , m_45
+## 
+##          s1        s2        s3       s4
+## 1  444.0000  0.000000  0.000000 0.000000
+## 2  438.9212  2.976651  1.506594 0.595557
+## 3  433.9005  5.846875  3.006055 1.246579
+## 4  428.9372  8.610309  4.498219 1.954258
+## 5  424.0307 11.274744  5.982918 2.711626
+## 6  419.1803 13.837048  7.460010 3.522609
+## 7  411.7413 17.735583  9.598581 4.945879
+## 8  404.4344 21.408841 11.719666 6.485919
+## 9  397.2571 24.862976 13.822805 8.139033
+## 10 390.2071 28.134759 15.907556 9.870854
+## 
+## , , m_50
+## 
+##          s1        s2        s3        s4
+## 1  422.0000  0.000000  0.000000  0.000000
+## 2  414.5110  4.428516  2.084158  0.976354
+## 3  407.1548  8.615803  4.153202  2.076148
+## 4  399.9293 12.562134  6.206595  3.302003
+## 5  392.8319 16.292596  8.243792  4.631694
+## 6  385.8605 19.805516 10.264362  6.069601
+## 7  375.7940 24.627550 13.207692  8.416655
+## 8  365.9901 29.065613 16.112971 10.934282
+## 9  356.4419 33.106420 18.979317 13.642610
+## 10 347.1429 36.761916 21.805705 16.536473
+## 
+## , , m_55
+## 
+##          s1        s2        s3        s4
+## 1  410.0000  0.000000  0.000000  0.000000
+## 2  399.3037  6.214088  2.974776  1.507433
+## 3  388.8865 11.926029  5.917031  3.270484
+## 4  378.7410 17.171767  8.825146  5.262106
+## 5  368.8602 21.990259 11.697711  7.451844
+## 6  359.2372 26.370209 14.533546  9.859078
+## 7  345.1132 32.231524 18.812619 13.943963
+## 8  331.5445 37.336264 23.000002 18.344323
+## 9  318.5093 41.835995 27.093461 22.929752
+## 10 305.9866 45.650536 31.092202 27.799874
+## 
+## , , m_60
+## 
+##          s1        s2        s3        s4
+## 1  322.0000  0.000000  0.000000  0.000000
+## 2  309.3401  7.013336  3.573224  2.073376
+## 3  297.1779 13.204290  7.083788  4.534050
+## 4  285.4939 18.638877 10.528089  7.339176
+## 5  274.2692 23.405029 13.903041 10.422712
+## 6  263.4859 27.555853 17.206323 13.751931
+## 7  248.0980 32.702067 22.096763 19.260431
+## 8  233.6087 36.947636 26.815109 24.972360
+## 9  219.9657 40.254992 31.361328 30.972666
+## 10 207.1194 42.767248 35.733875 37.163846
+## 
+## , , m_65
+## 
+##           s1        s2        s3        s4
+## 1  160.00000  0.000000  0.000000  0.000000
+## 2  150.65580  4.869065  2.688516  1.786623
+## 3  141.85731  8.912971  5.301835  3.927889
+## 4  133.57266 12.263676  7.835262  6.328404
+## 5  125.77184 15.009214 10.285782  8.933160
+## 6  118.42661 17.231964 12.651358 11.690070
+## 7  107.95835 19.854779 16.173331 16.171362
+## 8   98.41543 21.639027 19.491620 20.793590
+## 9   89.71606 22.740862 22.608479 25.472463
+## 10  81.78565 23.298547 25.528089 30.133848
+## 
+## , , m_70
+## 
+##           s1        s2        s3        s4
+## 1  116.00000  0.000000  0.000000  0.000000
+## 2  105.74624  4.921229  3.011596  2.320931
+## 3   96.39886  8.679636  5.884749  5.036753
+## 4   87.87774 11.464951  8.612801  8.044510
+## 5   80.10983 13.475548 11.191940 11.222679
+## 6   73.02857 14.827990 13.621607 14.521835
+## 7   66.57325 15.706317 15.902542 17.817893
+## 8   60.68854 16.159080 18.038687 21.113690
+## 9   55.32401 16.268331 20.033808 24.373850
+## 10  50.43368 16.191631 21.892491 27.482202
+## 
+## , , f_40
+## 
+##          s1        s2        s3        s4
+## 1  498.0000  0.000000 0.0000000 0.0000000
+## 2  495.0011  2.257614 0.5659042 0.1754274
+## 3  492.0202  4.465653 1.1309660 0.3832130
+## 4  489.0572  6.627174 1.6951496 0.6204439
+## 5  486.1121  8.741933 2.2584225 0.8875047
+## 6  483.1848 10.809915 2.8207518 1.1845502
+## 7  478.6765 13.965767 3.6203754 1.7425859
+## 8  474.2103 17.015206 4.4178097 2.3686819
+## 9  469.7857 19.968212 5.2129507 3.0533024
+## 10 465.4024 22.814005 6.0057097 3.8076611
+## 
+## , , f_45
+## 
+##          s1        s2        s3         s4
+## 1  856.0000  0.000000  0.000000  0.0000000
+## 2  848.0132  6.047775  1.385597  0.5534324
+## 3  840.1009 11.892132  2.768056  1.2389003
+## 4  832.2625 17.544106  4.147167  2.0462753
+## 5  824.4971 23.007248  5.522739  2.9728852
+## 6  816.8043 28.275919  6.894585  4.0252383
+## 7  805.5658 35.576024  8.983572  5.8987215
+## 8  794.4820 42.498145 11.062824  8.0115208
+## 9  783.5507 49.109704 13.131789 10.2985743
+## 10 772.7698 55.386307 15.190075 12.7864990
+## 
+## , , f_50
+## 
+##          s1        s2        s3         s4
+## 1  822.0000  0.000000  0.000000  0.0000000
+## 2  810.6901  8.282801  2.031934  0.9952014
+## 3  799.5357 16.174886  4.056386  2.2329870
+## 4  788.5349 23.673744  6.072773  3.7185916
+## 5  777.6854 30.796810  8.080504  5.4372828
+## 6  766.9852 37.568962 10.079024  7.3668222
+## 7  752.1438 46.309145 13.054381 10.5386938
+## 8  737.5897 54.479261 16.007176 14.0267293
+## 9  723.3172 62.088710 18.936362 17.8274320
+## 10 709.3208 69.119759 21.840907 21.9643300
+## 
+## , , f_55
+## 
+##          s1       s2        s3        s4
+## 1  842.0000  0.00000  0.000000  0.000000
+## 2  825.7071 11.46952  3.113838  1.709537
+## 3  809.7295 22.19506  6.209839  3.865626
+## 4  794.0610 32.21405  9.286416  6.438516
+## 5  778.6957 41.51403 12.342101  9.448121
+## 6  763.6278 50.19643 15.375356 12.800418
+## 7  742.3963 61.04782 20.122329 18.540748
+## 8  721.7550 70.88707 24.808756 24.786622
+## 9  701.6877 79.71612 29.432175 31.552803
+## 10 682.1783 87.57546 33.990043 38.815154
+## 
+## , , f_60
+## 
+##          s1        s2        s3        s4
+## 1  519.0000  0.000000  0.000000  0.000000
+## 2  504.5700  9.374342  3.027287  2.028396
+## 3  490.5412 17.909633  6.025084  4.524126
+## 4  476.9024 25.680569  8.990838  7.426204
+## 5  463.6428 32.722419 11.922365 10.712390
+## 6  450.7519 39.113841 14.817625 14.316608
+## 7  432.9675 46.701174 19.235764 20.220174
+## 8  415.8848 53.191166 23.561935 26.635540
+## 9  399.4760 58.873151 27.792570 33.301128
+## 10 383.7147 63.676246 31.926458 40.313049
+## 
+## , , f_65
+## 
+##          s1        s2        s3        s4
+## 1  394.0000  0.000000  0.000000  0.000000
+## 2  378.4547  9.215675  3.553518  2.776075
+## 3  363.5228 17.335648  7.049949  6.091601
+## 4  349.1800 24.451708 10.484943  9.883338
+## 5  335.4031 30.683956 13.854758 14.058171
+## 6  322.1698 36.038569 17.156527 18.635117
+## 7  302.3745 42.834226 22.456736 26.542759
+## 8  283.7955 48.221918 27.564596 34.873679
+## 9  266.3580 52.468320 32.477272 43.430637
+## 10 249.9920 55.671818 37.194767 52.178792
+## 
+## , , f_70
+## 
+##          s1        s2        s3        s4
+## 1  187.0000  0.000000  0.000000  0.000000
+## 2  175.5100  6.215757  2.766934  2.507278
+## 3  164.7260 11.356938  5.455829  5.461185
+## 4  154.6047 15.559940  8.061231  8.774158
+## 5  145.1052 18.905611 10.579061 12.410137
+## 6  136.1894 21.525792 13.005837 16.278978
+## 7  127.8214 23.576628 15.339461 20.262497
+## 8  119.9676 25.117215 17.579613 24.335576
+## 9  112.5963 26.223427 19.726352 28.453878
+## 10 105.6780 26.907973 21.780390 32.633627
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_cnew  }\CommentTok{##各人群每个周期新增的cvd人数 }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##          num
+## 1  0.0000000
+## 2  0.8886234
+## 3  0.8822342
+## 4  0.8758909
+## 5  0.8695933
+## 6  0.8633409
+## 7  1.4813454
+## 8  1.4644007
+## 9  1.4476498
+## 10 1.4310905
+## 
+## , , m_45
+## 
+##         num
+## 1  0.000000
+## 2  2.977646
+## 3  2.943586
+## 4  2.909915
+## 5  2.876629
+## 6  2.843724
+## 7  4.404913
+## 8  4.326741
+## 9  4.249957
+## 10 4.174535
+## 
+## , , m_50
+## 
+##         num
+## 1  0.000000
+## 2  4.434544
+## 3  4.355846
+## 4  4.278545
+## 5  4.202615
+## 6  4.128034
+## 7  5.855312
+## 8  5.702556
+## 9  5.553785
+## 10 5.408895
+## 
+## , , m_55
+## 
+##         num
+## 1  0.000000
+## 2  6.221621
+## 3  6.059308
+## 4  5.901230
+## 5  5.747276
+## 6  5.597338
+## 7  7.844326
+## 8  7.535914
+## 9  7.239628
+## 10 6.954990
+## 
+## , , m_60
+## 
+##         num
+## 1  0.000000
+## 2  7.031213
+## 3  6.754770
+## 4  6.489195
+## 5  6.234062
+## 6  5.988960
+## 7  8.037647
+## 8  7.568238
+## 9  7.126243
+## 10 6.710062
+## 
+## , , m_65
+## 
+##         num
+## 1  0.000000
+## 2  4.880806
+## 3  4.595761
+## 4  4.327362
+## 5  4.074639
+## 6  3.836675
+## 7  5.051209
+## 8  4.604710
+## 9  4.197679
+## 10 3.826628
+## 
+## , , m_70
+## 
+##         num
+## 1  0.000000
+## 2  4.947708
+## 3  4.510358
+## 4  4.111667
+## 5  3.748219
+## 6  3.416897
+## 7  3.114862
+## 8  2.839526
+## 9  2.588527
+## 10 2.359716
+## 
+## , , f_40
+## 
+##         num
+## 1  0.000000
+## 2  2.258274
+## 3  2.244675
+## 4  2.231158
+## 5  2.217722
+## 6  2.204366
+## 7  3.415583
+## 8  3.383715
+## 9  3.352143
+## 10 3.320867
+## 
+## , , f_45
+## 
+##         num
+## 1  0.000000
+## 2  6.050976
+## 3  5.994518
+## 4  5.938587
+## 5  5.883178
+## 6  5.828285
+## 7  8.234885
+## 8  8.121581
+## 9  8.009836
+## 10 7.899628
+## 
+## , , f_50
+## 
+##          num
+## 1   0.000000
+## 2   8.287268
+## 3   8.173243
+## 4   8.060787
+## 5   7.949878
+## 6   7.840495
+## 7  10.461769
+## 8  10.259332
+## 9  10.060811
+## 10  9.866132
+## 
+## , , f_55
+## 
+##         num
+## 1   0.00000
+## 2  11.48498
+## 3  11.26274
+## 4  11.04481
+## 5  10.83109
+## 6  10.62150
+## 7  13.82631
+## 8  13.44189
+## 9  13.06815
+## 10 12.70481
+## 
+## , , f_60
+## 
+##          num
+## 1   0.000000
+## 2   9.397055
+## 3   9.135784
+## 4   8.881777
+## 5   8.634832
+## 6   8.394754
+## 7  10.576592
+## 8  10.159292
+## 9   9.758457
+## 10  9.373437
+## 
+## , , f_65
+## 
+##          num
+## 1   0.000000
+## 2   9.244946
+## 3   8.880186
+## 4   8.529819
+## 5   8.193275
+## 6   7.870009
+## 7  10.740690
+## 8  10.080742
+## 9   9.461344
+## 10  8.880004
+## 
+## , , f_70
+## 
+##         num
+## 1  0.000000
+## 2  6.234318
+## 3  5.851259
+## 4  5.491736
+## 5  5.154303
+## 6  4.837604
+## 7  4.540364
+## 8  4.261387
+## 9  3.999552
+## 10 3.753804
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_clive  }\CommentTok{##各人群每个周期发生cvd且存活的人数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , m_40
+## 
+##          num
+## 1  0.0000000
+## 2  0.8884289
+## 3  0.8864827
+## 4  0.8842996
+## 5  0.8817218
+## 6  0.8807611
+## 7  1.4836763
+## 8  1.4680476
+## 9  1.4513282
+## 10 1.4354775
+## 
+## , , m_45
+## 
+##         num
+## 1  0.000000
+## 2  2.976651
+## 3  2.969015
+## 4  2.957486
+## 5  2.950202
+## 6  2.936501
+## 7  4.413004
+## 8  4.341627
+## 9  4.274405
+## 10 4.189489
+## 
+## , , m_50
+## 
+##         num
+## 1  0.000000
+## 2  4.428516
+## 3  4.414697
+## 4  4.388763
+## 5  4.375543
+## 6  4.349564
+## 7  5.869989
+## 8  5.710800
+## 9  5.578375
+## 10 5.460185
+## 
+## , , m_55
+## 
+##         num
+## 1  0.000000
+## 2  6.214088
+## 3  6.170529
+## 4  6.125857
+## 5  6.085737
+## 6  6.002791
+## 7  7.884721
+## 8  7.597136
+## 9  7.265203
+## 10 7.035623
+## 
+## , , m_60
+## 
+##         num
+## 1  0.000000
+## 2  7.013336
+## 3  6.933573
+## 4  6.832748
+## 5  6.739764
+## 6  6.629109
+## 7  8.104714
+## 8  7.590950
+## 9  7.197941
+## 10 6.819001
+## 
+## , , m_65
+## 
+##         num
+## 1  0.000000
+## 2  4.869065
+## 3  4.762206
+## 4  4.665575
+## 5  4.554715
+## 6  4.436958
+## 7  5.070799
+## 8  4.644453
+## 9  4.259375
+## 10 3.906014
+## 
+## , , m_70
+## 
+##         num
+## 1  0.000000
+## 2  4.921229
+## 3  4.769863
+## 4  4.569234
+## 5  4.366980
+## 6  4.122061
+## 7  3.925912
+## 8  3.680870
+## 9  3.430414
+## 10 3.266918
+## 
+## , , f_40
+## 
+##         num
+## 1  0.000000
+## 2  2.257614
+## 3  2.256243
+## 4  2.256871
+## 5  2.256262
+## 6  2.254640
+## 7  3.422110
+## 8  3.392827
+## 9  3.358900
+## 10 3.334082
+## 
+## , , f_45
+## 
+##         num
+## 1  0.000000
+## 2  6.047775
+## 3  6.043978
+## 4  6.044499
+## 5  6.042223
+## 6  6.028075
+## 7  8.244873
+## 8  8.150629
+## 9  8.023948
+## 10 7.922107
+## 
+## , , f_50
+## 
+##          num
+## 1   0.000000
+## 2   8.282801
+## 3   8.281624
+## 4   8.259559
+## 5   8.236438
+## 6   8.220519
+## 7  10.503997
+## 8  10.297150
+## 9  10.104423
+## 10  9.948539
+## 
+## , , f_55
+## 
+##         num
+## 1   0.00000
+## 2  11.46952
+## 3  11.45560
+## 4  11.43176
+## 5  11.35048
+## 6  11.32486
+## 7  13.85951
+## 8  13.47749
+## 9  13.15114
+## 10 12.85990
+## 
+## , , f_60
+## 
+##          num
+## 1   0.000000
+## 2   9.374342
+## 3   9.330947
+## 4   9.291033
+## 5   9.221511
+## 6   9.168767
+## 7  10.595732
+## 8  10.249250
+## 9   9.797567
+## 10  9.461310
+## 
+## , , f_65
+## 
+##          num
+## 1   0.000000
+## 2   9.215675
+## 3   9.139486
+## 4   9.033869
+## 5   8.937294
+## 6   8.749120
+## 7  10.804962
+## 8  10.170728
+## 9   9.525356
+## 10  8.955310
+## 
+## , , f_70
+## 
+##         num
+## 1  0.000000
+## 2  6.215757
+## 3  6.117452
+## 4  5.986766
+## 5  5.789576
+## 6  5.589569
+## 7  5.431759
+## 8  5.243624
+## 9  5.051218
+## 10 4.803299
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_cvd }\CommentTok{##各人群cvd发病数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1]  10.20417  31.70765  43.92013  59.10163  61.94039  39.39547  31.63748
+##  [8]  24.62850  61.96147  80.95971 108.28628  84.31198  81.88101  44.12433
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_cd}\CommentTok{##各人群因cvd死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1]  2.735556  9.870854 16.536473 27.799874 37.163846 30.133848 27.482202
+##  [8]  3.807661 12.786499 21.964330 38.815154 40.313049 52.178792 32.633627
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_nd}\CommentTok{##各人群非cvd死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1]  5.865071 15.907556 21.805705 31.092202 35.733875 25.528089 21.892491
+##  [8]  6.005710 15.190075 21.840907 33.990043 31.926458 37.194767 21.780390
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_d}\CommentTok{##各人群全死因死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1]  8.600628 25.778410 38.342179 58.892075 72.897721 55.661937 49.374693
+##  [8]  9.813371 27.976574 43.805237 72.805197 72.239508 89.373560 54.414017
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{qaly }\CommentTok{##各人群qaly}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] 2245.4473 4308.9636 4027.6202 3813.6582 2869.0922 1333.1401  892.4738
+##  [8] 4923.6811 8406.9425 7988.9629 8056.1947 4836.8231 3517.6313 1579.4142
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lifeyear }\CommentTok{##各人群生命年}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] 2251.3300 4327.2977 4052.9225 3846.9089 2903.0481 1353.9798  909.8754
+##  [8] 4938.1157 8443.3835 8036.2968 8118.6540 4884.6939 3562.1723 1604.5880
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N_cvd<-}\KeywordTok{sum}\NormalTok{(n_cvd)}
+\NormalTok{N_cd<-}\KeywordTok{sum}\NormalTok{(n_cd)}
+\NormalTok{N_nd<-}\KeywordTok{sum}\NormalTok{(n_nd)}
+\NormalTok{N_d<-}\KeywordTok{sum}\NormalTok{(n_d)}
+\NormalTok{QALY<-}\KeywordTok{sum}\NormalTok{(qaly)}
+\NormalTok{LIFEYEAR<-}\KeywordTok{sum}\NormalTok{(lifeyear)}
+
+\NormalTok{N_cvd }\CommentTok{##总人群cvd发病数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 764.0602
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N_cd }\CommentTok{##总人群因cvd死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 354.2218
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N_nd }\CommentTok{##总人群非cvd死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 325.7533
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{N_d }\CommentTok{##总人群全死因死亡数}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 679.9751
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{QALY }\CommentTok{##总人群qaly}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 58800.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{LIFEYEAR  }\CommentTok{##总人数获得生命年}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 59233.27
+\end{verbatim}
+
+\end{document}

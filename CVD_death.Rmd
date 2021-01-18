@@ -1,0 +1,32 @@
+---
+title: "per CVD death prevented"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(knitr)
+library(xtable)
+library(darthtools)
+library(ggplot2)
+source("./function/transform_func.R")
+```
+
+Expected result:
+
+Strategy 1: prevented 298 (95\% CI: 155-441) CVD events
+
+Strategy 2: prevented 374 (95\% CI: 181-567) CVD events
+
+Strategy 3: prevented 346 (95\% CI: 154-538) CVD events 
+
+```{r, results='asis', message=FALSE}
+library(readr)
+rate_data <- read_csv("data/ghdx_data.csv")
+print(xtable(data.frame(rate_data),digits=c(0,0,0,6,6,6),
+      caption = "Data from Global Health Data Exchange"),
+      caption.placement="top")
+```
