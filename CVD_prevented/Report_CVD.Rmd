@@ -1,0 +1,241 @@
+---
+title: "Report for the Markov model (cohort state-transition model)"
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{booktabs}
+   - \usepackage{fancyhdr}
+   - \pagestyle{fancy}
+   - \usepackage{array}
+   - \usepackage{multirow}
+   # - \usepackage{afterpage}
+   - \usepackage{rotating}
+output: pdf_document
+# classoption: landscape
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(xtable)
+library(darthtools)
+library(ggplot2)
+```
+
+
+# Results from the paper
+
+These two tables are from the result part of the paper by Yaqin Si.
+```{r message=FALSE}
+strategy_names <- c("strategy1", "strategy2", "strategy3")
+# QALY
+QALY <- data.frame("est" = c(498,691,654),
+                   "LB" = c(103,233,105),
+                   "UB" = c(894,194,1108))
+rownames(QALY) <- strategy_names
+# Prevent CVD events
+num_CVD <- data.frame("est" = c(298,374,346),
+                   "LB" = c(155,181,154),
+                   "UB" = c(441,567,538))
+rownames(num_CVD) <- strategy_names
+```
+
+```{r, echo=FALSE, results='asis'}
+t1 <- kable(QALY, format = "latex", booktabs = TRUE)
+t2 <- kable(num_CVD, format = "latex", booktabs = TRUE)
+cat(c("\\begin{table}[!htb]
+    \\begin{minipage}{.5\\linewidth}
+      \\caption{Increased QALY with no screening}
+      \\centering",
+        t1,
+    "\\end{minipage}%
+    \\begin{minipage}{.5\\linewidth}
+      \\centering
+        \\caption{Prevent CVD events}",
+        t2,
+    "\\end{minipage} 
+\\end{table}"
+))  
+```
+
+\newpage
+# Data and parameters
+```{r, results='asis', message=FALSE}
+library(readr)
+rate_data <- read_csv("../data/ghdx_data.csv")
+print(xtable(data.frame(rate_data),digits=c(0,0,0,6,6,6),
+      caption = "Data from Global Health Data Exchange"),
+      caption.placement="top")
+```
+
+```{r, results='asis', message=FALSE}
+library(readr)
+noStrategy_data <- read_csv("../data/Normal_data.csv")
+print(xtable(data.frame(noStrategy_data),digits=c(0,0,0,0),
+      caption = "Distribution of the population"),
+      caption.placement="top")
+```
+
+```{r, results='asis', message=FALSE}
+population_data <- readr::read_csv("../data/Normal3Stra_data.csv")
+population_data <- data.frame(population_data)
+print(xtable(data.frame(population_data),digits=c(0,0,0,0,0,0,0),
+      caption = "Distribution of the population under different strategies"),caption.placement="top")
+```
+
+\clearpage
+```{r}
+## General setup
+source("../function/transform_func.R")
+n_t <- 10   # time horizon, number of cycles
+# S1: live; S2: cvd; S3: cvdth; S4: oth_death
+v_names_states <- c("S1", "S2", "S3", "S4")  
+n_states    <- length(v_names_states)   # number of health states 
+v_names_str <- c("Strategy0","Strategy1", "Strategy2", "Strategy3") # store the strategy names
+n_str       <- length(v_names_str)      # number of strategies
+
+# Health utilities
+out_cvd_free <-	1   # utility when being S1
+out_cvd <- 0.9   # utility when being S2
+out_dth <-	0   # utility when being S3 and S4 together
+out_trans_to_cvd <-	-0.038    # TODO
+
+uti_values <- c(out_cvd_free, out_cvd, out_dth, out_dth)
+
+HR_cvdhistory_cvd <-	1.37
+HR_cvdhistory_cvdth <- 3.12
+HR_high_live_cvdth <-	1.17
+
+p_live_oth_death <- rate_to_prob(r=rate_data$death_nonCVD,t = 1)
+p_live_cvd <- rate_to_prob(r=rate_data$incidence, t=1)
+p_live_cvdth <- rate_to_prob(r=rate_data$death_CVD, t=1)
+# transition probability from S2 to S3
+p_ccvd_acvd <- rate_to_prob(rate_data$incidence*HR_cvdhistory_cvd, t=1)
+p_ccvd_cvdth <- rate_to_prob(rate_data$death_CVD*HR_cvdhistory_cvdth,t=1)
+set.seed(100)
+p_acvd_cvdth <- rep(runif(1,min=0.02,max=0.1),length=length(p_live_cvd))
+
+# half-cycle correction
+# corr_matrix <- matrix(1,nrow = 11,ncol = 4)
+# corr_matrix[1,] <- rep(0.5,4)
+# corr_matrix[11,] <- rep(0.5,4)
+# corr_matrix
+```
+
+### Component 1: A transition probability matrix $P_t$
+\begin{center}
+\includegraphics[width=8in]{TreeAge.jpg}
+\end{center}
+
+\begin{center}
+\includegraphics[width=6in]{Mat.png}
+\end{center}
+$$
+P_t=
+\begin{Bmatrix}
+p_{[1,1,t]} & p_{[1,2,t]} & p_{[1,3,t]} & p_{[1,4,t]} \\
+p_{[2,1,t]} & p_{[2,2,t]} & p_{[2,3,t]} & p_{[2,4,t]} \\
+p_{[3,1,t]} & p_{[3,2,t]} & p_{[3,3,t]} & p_{[3,4,t]} \\
+p_{[4,1,t]} & p_{[4,2,t]} & p_{[4,3,t]} & p_{[4,4,t]}\\
+\end{Bmatrix}
+$$
+Thus, 
+
+$P4 = 1-P1-P2-P3$
+
+$P1 = p\_live\_cvd*(1-p\_acvd\_cvdth)$
+
+$P2 = p\_live\_cvdth + p\_live\_cvd*p\_acvd\_cvdth$ 
+
+$P3 = p\_live\_oth\_death$
+
+$P6= 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death$
+
+$P5= p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth$
+
+# Strategy 0 (a male 40-45)
+
+In what follows, an example for the groups of male patients, aging from 40 to 45 is illustrated.
+```{r}
+###################### Construct state-transition models for Strategy1 #####################
+#### Create transition arrays ####
+a_P <- array(0, dim      = c(n_states, n_states, 10),
+                dimnames = list(v_names_states, v_names_states, 1:10))
+## From S1, S2, S3, S4
+a_P["S1", "S1", 1:5]   <- 1-(p_live_cvd[1]*(1-p_acvd_cvdth[1]) +
+                               p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1] +
+                               p_live_oth_death[1])
+a_P["S1", "S2", 1:5]  <- p_live_cvd[1]*(1-p_acvd_cvdth[1])
+a_P["S1", "S3", 1:5]   <- p_live_cvdth[1]*p_live_cvd[1]*p_acvd_cvdth[1]
+a_P["S1", "S4", 1:5]   <- p_live_oth_death[1]
+a_P["S2", "S1", 1:5] <- 0
+a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[1]-
+  (p_ccvd_cvdth[1]+p_ccvd_acvd[1]*p_acvd_cvdth[1])
+a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[1]+
+  p_ccvd_acvd[1]*p_acvd_cvdth[1]
+a_P["S2", "S4", 1:5] <- p_live_oth_death[1]
+a_P["S3", "S3", 1:5] <- 1
+a_P["S4", "S4", 1:5] <- 1
+
+## From S1, S2, S3, S4
+a_P["S1", "S1", 6:10] <-  1-(p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1])+
+                               p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1] +
+                               p_live_oth_death[1+1])
+a_P["S1", "S2", 6:10]  <- p_live_cvd[1+1]*(1-p_acvd_cvdth[1+1])
+a_P["S1", "S3", 6:10]  <- p_live_cvdth[1+1]*p_live_cvd[1+1]*p_acvd_cvdth[1+1]
+a_P["S1", "S4", 6:10]  <- p_live_oth_death[1+1]
+a_P["S2", "S1", 6:10] <- 0
+a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[1+1]-
+  (p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1])
+a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[1+1]+p_ccvd_acvd[1+1]*p_acvd_cvdth[1+1]
+a_P["S2", "S4", 6:10] <-  p_live_oth_death[1+1]
+a_P["S3", "S3", 6:10] <- 1
+a_P["S4", "S4", 6:10] <- 1
+# is the constructed transition matrix in 10 cycles
+# depends on the specific population (age and gender)
+a_P  
+```
+
+### Component 2: The  cohort trace matrix $M$
+```{r fig.cap="For the group male aging from 40-45",fig.height=3.5}
+## Initial state vector: All starting healthy
+v_s_init <- c(state0 = 1, state1 = 0, state2 = 0, state3 = 0) 
+## Initialize cohort trace for Markov model 
+m_M <- matrix(0,nrow     = (n_t+1), ncol = n_states, 
+              dimnames = list(0:(n_t), v_names_states))
+m_M[1, ] <- v_s_init
+for(t in 1:10){
+  m_M[t + 1, ]      <- m_M[t, ]      %*% a_P[, , t]   
+}
+m_M
+```
+\textcolor{red}{This matrix is the trace matrix of the specific population (male, 40-45) during these 10 cycles. The whole cohort starts in $S1$ state and transitions to the rest of the states over time.}
+
+```{r}
+
+CVD_per_person <- sum(m_M[,1]* p_live_cvd[1])
+CVD_per_person
+
+# calculation of the per CVD prevented events
+CVD_prevented <- matrix(NA,nrow=14,ncol=1)
+
+for(i in 1:14){
+  CVD_prevented[i] <- sum(m_M[,1]*p_live_cvd[i])
+}
+CVD_prevented
+# we need to consider the following group of patients aged 40-45 if we use strategy3
+strategy3_noscren_CVD <- matrix(CVD_prevented[c(1,2,8,9)],ncol=2,nrow=2)
+colnames(strategy3_noscren_CVD) <- c("male","female")
+rownames(strategy3_noscren_CVD) <- c("40","45")
+strategy3_noscren_CVD
+```
+
+```{r}
+result_strategy0 <- matrix(NA,nrow=1,ncol=1)
+colnames(result_strategy0) <- c("strategy0")
+
+result_strategy0 <- sum(noStrategy_data$num * as.numeric(CVD_prevented))
+result_strategy0
+```
+
+\textcolor{red}{Under strategy0 (no screening), `r result_strategy0` is the number of patients transitioned from S1 to S2.}
+
+
