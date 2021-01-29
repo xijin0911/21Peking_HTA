@@ -28,7 +28,7 @@ p1<-array(0,dim=c(10,n_population),dimnames=list(1:10,names_population))  ##s1�
 p2<-array(0,dim=c(10,n_population),dimnames=list(1:10,names_population))  ##s1到s3的概率
 p4<-array(0,dim=c(10,n_population),dimnames=list(1:10,names_population))  ##s1维持在s1的概率
 set.seed(1)
-p8<-array(runif(140,min=0.02,max=0.1),dim=c(10,n_population),dimnames=list(1:10,names_population))  ##cvd发作急性死亡概率
+p8 <-array(runif(140,min=0.02,max=0.1),dim=c(10,n_population),dimnames=list(1:10,names_population))  ##cvd发作急性死亡概率
 ###这里设定每个层的人群，在每一年的循环中，急性死亡的概率都是不同的，因此产生140个随机数，取值服从2%~10%的均匀分布
 p5<-array(0,dim=c(10,n_population),dimnames=list(1:10,names_population))  ##s2到s4的概率
 p6<-array(0,dim=c(10,n_population),dimnames=list(1:10,names_population))  ##s2维持在s2的概率
@@ -177,7 +177,9 @@ for (i in 1:14){
   for (j in 1:9){
     m_M[j+1,,i]<-m_M[j,,i] %*% a_P[,,j,i]
     n_cnew[j+1,1,i]<-m_M[j,1,i] * p10[j,i]   ##新发cvd=s1人数*p9(无cvd发病概率)
+
     n_clive[j+1,1,i]<-m_M[j,1,i]*a_P["s1","s2",j,i] +m_M[j,2,i]*p9[j,i] ##首发或复发cvd并存活的人数=s1人数*p1+s2人数*p9
+
     qaly_m[j+1,,i]<-m_M[j+1,,i] * uti+n_clive[j+1,1,i]*uti2 ##qaly=等于四个状态的qaly之和+损失的qaly
     lifeyear_m[j+1,,i]<-m_M[j+1,,i]*year
   }

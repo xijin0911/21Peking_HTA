@@ -1,0 +1,819 @@
+---
+title: "Report for the Markov model (cohort state-transition model)"
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{booktabs}
+   - \usepackage{fancyhdr}
+   - \pagestyle{fancy}
+   - \usepackage{array}
+   - \usepackage{multirow}
+   # - \usepackage{afterpage}
+   - \usepackage{rotating}
+output: pdf_document
+# classoption: landscape
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(xtable)
+library(darthtools)
+library(ggplot2)
+library(readr)
+set.seed(1)
+source("function/transform_func.R")
+```
+# Data and parameters
+```{r, results='asis', message=FALSE}
+rate_data <- read_csv("data/ghdx_data.csv")
+print(xtable(data.frame(rate_data),digits=c(0,0,0,6,6,6),
+      caption = "Data from Global Health Data Exchange"),
+      caption.placement="top",comment=FALSE)
+```
+
+
+```{r, results='asis', message=FALSE}
+population_data <- read_csv("data/Normal3Stra_data.csv")
+population_data <- data.frame(population_data)
+```
+
+```{r}
+n_t <- 10   # time horizon, number of cycles
+v_names_states <- c("S1", "S2", "S3", "S4") # S1: live; S2: cvd; S3: cvdth; S4: oth_death 
+n_states    <- length(v_names_states)   # number of health states 
+v_names_str <- c("Strategy0","Strategy1", "Strategy2", "Strategy3") # store the strategy names
+n_str       <- length(v_names_str)      # number of strategies
+names_population <- c("m40","m45","m50","m55","m60","m65","m70",
+                        "f40","f45","f50","f55","f60","f65","f70")
+# Health utilities
+out_cvd_free <-	1   # utility when being S1
+out_cvd <- 0.9   # utility when being S2
+out_dth <-	0   # utility when being S3 and S4 together
+out_trans_to_cvd <-	-0.038    
+
+uti_values <- c(out_cvd_free, out_cvd, out_dth, out_dth)
+year <- c(1,1,0,0)
+HR_cvdhistory_cvd <-	1.37
+HR_cvdhistory_cvdth <- 3.12
+HR_high_live_cvdth <-	1.17
+
+p_live_oth_death <- rate_to_prob(r=rate_data$death_nonCVD, t = 1)
+p_live_cvd <- rate_to_prob(r=rate_data$incidence, t=1)
+p_live_cvdth <- rate_to_prob(r=rate_data$death_CVD, t=1)
+p_ccvd_acvd <- rate_to_prob(rate_data$incidence*HR_cvdhistory_cvd, t=1)
+p_ccvd_cvdth <- rate_to_prob(rate_data$death_CVD*HR_cvdhistory_cvdth, t=1)
+# p_acvd_cvddth
+```
+
+# A transition probability matrix $P_t$
+\begin{center}
+\includegraphics[width=8in]{TreeAge.jpg}
+\end{center}
+
+\begin{center}
+\includegraphics[width=6in]{Mat.png}
+\end{center}
+$$
+P_t=
+\begin{Bmatrix}
+p_{[1,1,t]} & p_{[1,2,t]} & p_{[1,3,t]} & p_{[1,4,t]} \\
+p_{[2,1,t]} & p_{[2,2,t]} & p_{[2,3,t]} & p_{[2,4,t]} \\
+p_{[3,1,t]} & p_{[3,2,t]} & p_{[3,3,t]} & p_{[3,4,t]} \\
+p_{[4,1,t]} & p_{[4,2,t]} & p_{[4,3,t]} & p_{[4,4,t]}\\
+\end{Bmatrix}
+$$
+Thus, 
+
+$P4 = 1-P1-P2-P3$
+
+$P1 = p\_live\_cvd*(1-p\_acvd\_cvdth)$
+
+$P2 = p\_live\_cvdth + p\_live\_cvd*p\_acvd\_cvdth$ 
+
+$P3 = p\_live\_oth\_death$
+
+$P6= 1-(p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth)-p\_live\_oth\_death$
+
+$P5= p\_ccvd\_cvdth+p\_ccvd\_acvd*p\_acvd\_cvdth$
+
+# Strategy0
+```{r, results='asis', message=FALSE}
+noStrategy_data <- read_csv("data/Normal_data.csv")
+print(xtable(data.frame(noStrategy_data),digits=c(0,0,0,0),
+      caption = "Distribution of the population"),
+      caption.placement="top",comment=FALSE)
+```
+
+```{r}
+###################### Construct state-transition models for Strategy1 #####################
+patient_group <- matrix(noStrategy_data$num, ncol=1,
+                        dimnames=list(names_population))
+result_m_M <- array(0, dim = c(10, 4, 14),
+               dimnames = list(paste0("t",0:9), v_names_states, names_population))
+# p_acvd_cvddth
+p8 <-array(runif(140,min=0.02,max=0.1),dim=c(10,14),dimnames=list(1:10,names_population))
+p9 <- array(NA, dim=c(10,14),dimnames=list(1:10,names_population))
+p10 <- array(NA, dim=c(10,14), dimnames=list(1:10,names_population))
+
+prob_CVD_group0 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+prob_CVDlive_group0 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+
+result_CVD <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))
+result_CVDlive <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))
+result_QALY <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))
+result_Lifeyear <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))
+result_CVDeath <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))
+result_nonCVDeath <- matrix(0, ncol = 1, nrow = 14,
+                     dimnames=list(names_population, ""))  
+# create a matrix for p_acvd_cvdth 
+for(i in 1:14){
+  # construct a_P
+  if(i == 7 | i == 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:10] <- 1-(p_live_cvd[i]*(1-p8[1:10,i]) +
+                               p_live_cvdth[i]*p_live_cvd[i]*p8[1:10,i] +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:10] <- p_live_cvd[i]*(1-p8[1:10,i])
+    a_P["S1", "S3", 1:10] <- p_live_cvdth[i]*p_live_cvd[i]*p8[1:10,i]
+    a_P["S1", "S4", 1:10] <- p_live_oth_death[i]
+    a_P["S2", "S1", 1:10] <- 0
+    a_P["S2", "S2", 1:10] <- 1-p_live_oth_death[i]-(p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:10,i])
+    a_P["S2", "S3", 1:10] <- p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:10,i]
+    a_P["S2", "S4", 1:10] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:10] <- 1
+    a_P["S4", "S4", 1:10] <- 1
+    p9[1:10,i] <- p_ccvd_acvd[i]*(1-p8[1:10,i])
+    p10[1:10,i] <- p_live_cvd[i]
+  }
+
+  if(i != 7 && i != 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:5] <- 1-(p_live_cvd[i]*(1-p8[1:5,i]) +
+                               p_live_cvdth[i]*p_live_cvd[i]*p8[1:5,i] +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:5] <- p_live_cvd[i]*(1-p8[1:5,i])
+    a_P["S1", "S3", 1:5] <- p_live_cvdth[i]*p_live_cvd[i]*p8[1:5,i]
+    a_P["S1", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S2", "S1", 1:5] <- 0
+    a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:5,i])
+    a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*p8[1:5,i]
+    a_P["S2", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:5] <- 1
+    a_P["S4", "S4", 1:5] <- 1
+    a_P["S1", "S1", 6:10] <-  1-(p_live_cvd[i+1]*(1-p8[6:10,i+1])+
+                             p_live_cvdth[i+1]*p_live_cvd[i+1]*p8[6:10,i+1]
+                             +p_live_oth_death[i+1])
+    a_P["S1", "S2", 6:10] <- p_live_cvd[i+1]*(1-p8[6:10,i+1])
+    a_P["S1", "S3", 6:10] <- p_live_cvdth[i+1]*p_live_cvd[i+1]*p8[6:10,i+1]
+    a_P["S1", "S4", 6:10] <- p_live_oth_death[i+1]
+    a_P["S2", "S1", 6:10] <- 0
+    a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[i+1]-
+       (p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[6:10,i+1])
+    a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[6:10,i+1]
+    a_P["S2", "S4", 6:10] <-  p_live_oth_death[i+1]
+    a_P["S3", "S3", 6:10] <- 1
+    a_P["S4", "S4", 6:10] <- 1
+    p9[1:5,i] <- p_ccvd_acvd[i]*(1-p8[1:5,i])
+    p9[6:10,i] <- p_ccvd_acvd[i+1]*(1-p8[6:10,i])
+    p10[1:5,i] <- p_live_cvd[i]
+    p10[6:10,i] <- p_live_cvd[i+1]
+  }
+  # construct m_M
+    v_s_init <- c(state0 = 1, state1 = 0, state2 = 0, state3 = 0) 
+    m_M <- matrix(0,nrow     = (n_t), ncol = n_states, 
+                  dimnames = list(0:(n_t-1), v_names_states))
+    m_M[1, ] <- v_s_init
+    for(t in 1:9){
+      m_M[t + 1, ] <- m_M[t, ] %*% a_P[, , t]
+    }
+  # calculate result
+    prob_CVD_group0[ ,i] <- m_M[ ,1] * p10[ ,i]  # new occurence = S1*p10
+    # new occurence = s1*p1+s2*p9
+    prob_CVDlive_group0[ ,i] <- m_M[ ,1]*(a_P["S1", "S2", 1:10]) + m_M[ ,2]*p9[ ,i] 
+    result_m_M[ , , i] <- m_M
+  result_CVD[i] <- sum(prob_CVD_group0[, i] * patient_group[i])
+  result_CVDlive[i] <- sum(prob_CVDlive_group0[, i] * patient_group[i])
+  result_Lifeyear[i] <- sum(t(t(m_M) * year) * patient_group[i])
+  result_QALY[i] <- sum(t(t(m_M) * uti_values)*patient_group[i] + 
+                          prob_CVDlive_group0[, i]*out_trans_to_cvd*patient_group[i])
+  result_CVDeath[i] <- m_M[10, 3] * patient_group[i]
+  result_nonCVDeath[i] <- m_M[10, 4] * patient_group[i]
+}
+result_m_M[ , ,1] # an example for the patient group 40-45, male
+
+```
+
+### Result for Strategy0
+```{r results='asis'}
+result_CVD_stg0 <- sum(result_CVD)
+print(xtable(data.frame(rbind(result_CVD,"sum" = result_CVD_stg0)),
+             caption = "New CVD events for patients under Strategy0"),
+      caption.placement="top",comment=FALSE)
+print(xtable(data.frame(matrix(c(sum(result_CVD),sum(result_CVDeath),sum(result_nonCVDeath), 
+                               sum(result_QALY),sum(result_Lifeyear)),nrow = 1, ncol=5,
+                               dimnames = list("", c("CVD events","CVD Death","non-CVD Death",
+                                                     "QALY", "Life Year")))),
+             caption = "Result for Strategy0"), caption.placement="top",comment=FALSE)
+
+```
+
+\clearpage
+
+```{r}
+HR_l_stg1	<- 0.63
+HR_m_stg1	<- 1.56
+HR_h_stg1	<- 1.6
+
+HR_l_stg2	<- 0.43
+HR_m_stg2	<- 0.97
+HR_h_stg2	<- 2.06
+
+HR_l_stg3	<- 0.45
+HR_m_stg3	<- 1.09
+HR_h_stg3	<- 2.11
+# lifestyle intervention for medium risk and above
+HR_smk_cvd	<-	0.85
+HR_smk_cvdth	<-	0.72
+HR_salt_cvd	<-	0.81
+HR_salt_cvdth	<-	0.66
+HR_wtc_cvd	<-	0.93
+HR_wtc_dth	<-	0.93
+# treatment intervention for high risk (additional)
+HR_hpt_lip_cvd	<-	0.7
+HR_hpt_lip_cvdth <-	0.82
+```
+\begin{center}
+\begin{table}
+\caption{Incidence rate}
+\begin{tabular}{cccc} 
+\hline
+Item & & CVD incidence(HR) & CVD cause-specific mortality (HR)  \\
+\hline
+\multirow{3}{6em}{Strategy 1}& {Low risk} & `r HR_l_stg1` & 1   \\
+& {Medium risk}& `r HR_m_stg1`  &  1\\
+& {High risk}& `r HR_h_stg1`  &  1.7 \\
+\hline
+\multirow{3}{6em}{Strategy 2}& {Low risk}& `r HR_l_stg2`  & 1 \\
+& {Medium risk}  & `r HR_m_stg2` &  1\\
+& {High risk}  &`r HR_h_stg2`  &  1.7\\
+\hline
+\multirow{3}{6em}{Strategy 3}& {Low risk}  & `r HR_l_stg3` & 1 \\
+& {Medium risk}  & `r HR_m_stg3` &  1\\
+& {High risk}  & `r HR_h_stg3` &  1.7\\
+\hline
+\multirow{3}{6em}{Intervention}& {Weight control}  & `r HR_wtc_cvd` &  `r HR_wtc_dth`\\
+& {Smoke cession}  & `r HR_smk_cvd` & `r HR_smk_cvdth` \\
+& {Salt reduction}  & `r HR_salt_cvd` & `r HR_salt_cvdth` \\
+\hline
+Medication & Statin and antihypertensive & `r HR_hpt_lip_cvd` &  `r HR_hpt_lip_cvdth` \\
+\hline
+\end{tabular}
+\end{table}
+\end{center}
+# Strategy 1
+
+```{r results='asis'}
+print(xtable(data.frame(population_data[which(population_data$strategy == "strategy1"),]),digits=c(0,0,0,0,0,0,0),
+      caption = "Distribution of the population under different strategies"),
+      caption.placement="top",comment=FALSE)
+```
+
+
+```{r}
+p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg1)
+p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg1*
+                             HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention
+p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg1*
+                             HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth*    # lifestyle intervention
+                             HR_hpt_lip_cvdth)   # treatment intervention 
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,1*
+                               HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention 
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,1.7*
+                               HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth* # lifestyle intervention
+                               HR_hpt_lip_cvdth) # treatment intervention 
+```
+
+```{r}
+risk_levels <- c("low","medium","high")
+result_CVD_lmh <- matrix(0,  nrow = 14,ncol = 3,
+                         dimnames = list(names_population, risk_levels))
+p_live_cvd_lmh <- matrix(cbind(p_live_cvd_l,p_live_cvd_m,p_live_cvd_h), ncol=3,
+                         dimnames = list(names_population,risk_levels))
+p_live_cvdth_lmh <- matrix(cbind(p_live_cvdth_l,p_live_cvdth_m,p_live_cvdth_h), ncol=3,
+                           dimnames = list(names_population,risk_levels))
+patient_group <- matrix(cbind(population_data[which(population_data$strategy=="strategy1"),]$low,
+                              population_data[which(population_data$strategy=="strategy1"),]$medium,
+                              population_data[which(population_data$strategy=="strategy1"),]$high),
+       ncol = 3, nrow=14,dimnames = list(names_population,risk_levels))
+prob_CVD_group1 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+prob_CVDlive_group1 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+result_CVD_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDlive_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_QALY_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_Lifeyear_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDeath_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_nonCVDeath_stg1 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+
+p8 <-array(runif(140,min=0.02,max=0.1),dim=c(10,14),dimnames=list(1:10,names_population))
+p9 <- array(NA, dim=c(10,14),dimnames=list(1:10,names_population))
+p10 <- array(NA, dim=c(10,14), dimnames=list(1:10,names_population))
+
+for(r in 1:3){  # three rish groups
+  # create a matrix for p_acvd_cvdth 
+  for(i in 1:14){
+  # construct a_P
+ if(i == 7 | i == 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:10] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:10] <- p_live_cvd_lmh[i,r]*(1-(1-p8[1:10,i]))
+    a_P["S1", "S3", 1:10] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) 
+    a_P["S1", "S4", 1:10] <- p_live_oth_death[i]  
+    a_P["S2", "S1", 1:10] <- 0
+    a_P["S2", "S2", 1:10] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*(1-p8[1:10,i]))
+    a_P["S2", "S3", 1:10] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*(1-p8[1:10,i]) 
+    a_P["S2", "S4", 1:10] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:10] <- 1
+    a_P["S4", "S4", 1:10] <- 1
+    p9[1:10,i] <- p_ccvd_acvd[i]*(1-p8[1:10,i])
+    p10[1:10,i] <- p_live_cvd[i]
+  }
+  if(i != 7 && i != 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:5] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:5,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i] +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:5] <- p_live_cvd_lmh[i,r]*(1-p8[1:5,i])
+    a_P["S1", "S3", 1:5] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i]
+    a_P["S1", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S2", "S1", 1:5] <- 0
+    a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:5,i])
+    a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*p8[1:5,i]
+    a_P["S2", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:5] <- 1
+    a_P["S4", "S4", 1:5] <- 1
+    a_P["S1", "S1", 6:10] <-  1-(p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])+
+                             p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+                             +p_live_oth_death[i+1])
+    a_P["S1", "S2", 6:10] <- p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])
+    a_P["S1", "S3", 6:10] <- p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+    a_P["S1", "S4", 6:10] <- p_live_oth_death[i+1]
+    a_P["S2", "S1", 6:10] <- 0
+    a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[i+1]-
+       (p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1] * p8[1:5,i+1])
+    a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[1:5,i+1]
+    a_P["S2", "S4", 6:10] <-  p_live_oth_death[i+1]
+    a_P["S3", "S3", 6:10] <- 1
+    a_P["S4", "S4", 6:10] <- 1
+    p9[1:5,i] <- p_ccvd_acvd[i]*(1-p8[1:5,i])
+    p9[6:10,i] <- p_ccvd_acvd[i+1]*(1-p8[6:10,i])
+    p10[1:5,i] <- p_live_cvd[i]
+    p10[6:10,i] <- p_live_cvd[i+1]
+  }
+     # construct m_M
+    v_s_init <- c(state0 = 1, state1 = 0, state2 = 0, state3 = 0) 
+    m_M <- matrix(0,nrow     = (n_t), ncol = n_states, 
+                  dimnames = list(0:(n_t-1), v_names_states))
+    m_M[1, ] <- v_s_init
+    for(t in 1:9){
+      m_M[t + 1, ] <- m_M[t, ] %*% a_P[, , t]
+    }
+    # calculate result
+    prob_CVD_group1[ ,i] <- m_M[ ,1]* p10[ ,i]  # new occurence = S1*p9
+    prob_CVDlive_group1[ ,i] <- m_M[ ,1]*(a_P["S1", "S2", 1:10]) + m_M[ ,2]*p9[ ,i] # new occurence = s1*p1+s2*p9
+  
+  result_CVD_stg1[i,r] <- sum(prob_CVD_group1[,i]*patient_group[i,r])
+  result_CVDlive_stg1[i,r] <- sum(prob_CVDlive_group1[,i]*patient_group[i,r])
+  result_Lifeyear_stg1[i,r] <- sum(t( t(m_M) * year )*patient_group[i,r])
+  
+  result_QALY_stg1[i,r] <- sum(t(t(m_M) * uti_values)*patient_group[i,r] + 
+                          prob_CVDlive_group1[, i]*out_trans_to_cvd*patient_group[i,r])
+  result_CVDeath_stg1[i,r] <- m_M[10,3]*patient_group[i,r]
+  result_nonCVDeath_stg1[i,r] <- m_M[10,4]*patient_group[i,r]
+}
+}
+
+```
+### Result for Strategy1
+```{r results="asis"}
+print(xtable((rbind(result_CVD_stg1, "sum" = colSums(result_CVD_stg1))),
+      caption = "New CVD events for patients under Strategy1"),
+      caption.placement="top",comment=FALSE)
+result_tab <- data.frame(matrix(c(sum(result_CVD_stg1),sum(result_CVDeath_stg1),
+                                  sum(result_nonCVDeath_stg1), sum(result_QALY_stg1),
+                                  sum(result_Lifeyear_stg1)),nrow = 1, ncol=5,
+                     dimnames = list("", c("CVD events","CVD Death","non-CVD Death",
+                                           "QALY", "Life Year"))))
+print(xtable(data.frame(result_tab),
+      caption = "Result for Strategy1"),
+      caption.placement="top",comment=FALSE)
+```
+
+\clearpage
+# Strategy 2
+
+```{r results="asis"}
+print(xtable(data.frame(population_data[which(population_data$strategy == "strategy2"),]),digits=c(0,0,0,0,0,0,0),
+      caption = "Distribution of the population under different strategies"),
+      caption.placement="top",comment=FALSE)
+```
+
+
+```{r}
+p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg2)
+p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg2*
+                             HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention
+p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg2*
+                             HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth*    # lifestyle intervention
+                             HR_hpt_lip_cvdth)   # treatment intervention 
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,1*
+                               HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention 
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,1.7*
+                               HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth* # lifestyle intervention
+                               HR_hpt_lip_cvdth) # treatment intervention 
+```
+
+```{r}
+risk_levels <- c("low","medium","high")
+result_CVD_lmh <- matrix(0,  nrow = 14,ncol = 3,
+                         dimnames = list(names_population, risk_levels))
+p_live_cvd_lmh <- matrix(cbind(p_live_cvd_l,p_live_cvd_m,p_live_cvd_h), ncol=3,
+                         dimnames = list(names_population,risk_levels))
+p_live_cvdth_lmh <- matrix(cbind(p_live_cvdth_l,p_live_cvdth_m,p_live_cvdth_h), ncol=3,
+                           dimnames = list(names_population,risk_levels))
+patient_group <- matrix(cbind(population_data[which(population_data$strategy=="strategy2"),]$low,
+                              population_data[which(population_data$strategy=="strategy2"),]$medium,
+                              population_data[which(population_data$strategy=="strategy2"),]$high),
+       ncol = 3, nrow=14,dimnames = list(names_population,risk_levels))
+prob_CVD_group2 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+prob_CVDlive_group2 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+result_CVD_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDlive_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_QALY_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_Lifeyear_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDeath_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_nonCVDeath_stg2 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels)) 
+p8 <-array(runif(140,min=0.02,max=0.1),dim=c(10,14),dimnames=list(1:10,names_population))
+p9 <- array(NA, dim=c(10,14),dimnames=list(1:10,names_population))
+p10 <- array(NA, dim=c(10,14), dimnames=list(1:10,names_population))
+for(r in 1:3){  # three rish groups
+  # create a matrix for p_acvd_cvdth 
+  for(i in 1:14){
+  # construct a_P
+  if(i == 7 | i == 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:10] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:10] <- p_live_cvd_lmh[i,r]*(1-(1-p8[1:10,i]))
+    a_P["S1", "S3", 1:10] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) 
+    a_P["S1", "S4", 1:10] <- p_live_oth_death[i]  
+    a_P["S2", "S1", 1:10] <- 0
+    a_P["S2", "S2", 1:10] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*(1-p8[1:10,i]))
+    a_P["S2", "S3", 1:10] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*(1-p8[1:10,i]) 
+    a_P["S2", "S4", 1:10] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:10] <- 1
+    a_P["S4", "S4", 1:10] <- 1
+    p9[1:10,i] <- p_ccvd_acvd[i]*(1-p8[1:10,i])
+    p10[1:10,i] <- p_live_cvd[i]
+  }
+  if(i != 7 && i != 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:5] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:5,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i] +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:5] <- p_live_cvd_lmh[i,r]*(1-p8[1:5,i])
+    a_P["S1", "S3", 1:5] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i]
+    a_P["S1", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S2", "S1", 1:5] <- 0
+    a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:5,i])
+    a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*p8[1:5,i]
+    a_P["S2", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:5] <- 1
+    a_P["S4", "S4", 1:5] <- 1
+    a_P["S1", "S1", 6:10] <-  1-(p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])+
+                             p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+                             +p_live_oth_death[i+1])
+    a_P["S1", "S2", 6:10] <- p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])
+    a_P["S1", "S3", 6:10] <- p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+    a_P["S1", "S4", 6:10] <- p_live_oth_death[i+1]
+    a_P["S2", "S1", 6:10] <- 0
+    a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[i+1]-
+       (p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[1:5,i+1])
+    a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[1:5,i+1]
+    a_P["S2", "S4", 6:10] <-  p_live_oth_death[i+1]
+    a_P["S3", "S3", 6:10] <- 1
+    a_P["S4", "S4", 6:10] <- 1
+    p9[1:5,i] <- p_ccvd_acvd[i]*(1-p8[1:5,i])
+    p9[6:10,i] <- p_ccvd_acvd[i+1]*(1-p8[6:10,i])
+    p10[1:5,i] <- p_live_cvd[i]
+    p10[6:10,i] <- p_live_cvd[i+1]
+  }
+     # construct m_M
+    v_s_init <- c(state0 = 1, state1 = 0, state2 = 0, state3 = 0) 
+    m_M <- matrix(0,nrow     = (n_t), ncol = n_states, 
+                  dimnames = list(0:(n_t-1), v_names_states))
+    m_M[1, ] <- v_s_init
+    for(t in 1:9){
+      m_M[t + 1, ] <- m_M[t, ] %*% a_P[, , t]
+    }
+    # calculate result
+    prob_CVD_group2[ ,i] <- m_M[ ,1]* p10[ ,i]  # new occurence = S1*p9
+    prob_CVDlive_group2[ ,i] <- m_M[ ,1]*(a_P["S1", "S2", 1:10]) + m_M[ ,2]*p9[ ,i] 
+  result_CVD_stg2[i,r] <- sum(prob_CVD_group2[,i]*patient_group[i,r])
+  result_CVDlive_stg2[i,r] <- sum(prob_CVDlive_group2[,i]*patient_group[i,r])
+  result_Lifeyear_stg2[i,r] <- sum(t( t(m_M) * year )*patient_group[i,r])
+  
+  result_QALY_stg2[i,r] <- sum(t(t(m_M) * uti_values)*patient_group[i,r] + 
+                          prob_CVDlive_group2[, i]*out_trans_to_cvd*patient_group[i,r])
+  result_CVDeath_stg2[i,r] <- m_M[10,3]*patient_group[i,r]
+  result_nonCVDeath_stg2[i,r] <- m_M[10,4]*patient_group[i,r]
+}}
+
+```
+### Result for Strategy2
+```{r results="asis"}
+print(xtable((rbind(result_CVD_stg2, "sum" = colSums(result_CVD_stg2))),
+      caption = "New CVD events for patients under Strategy1"),
+      caption.placement="top",comment=FALSE)
+result_tab <- data.frame(matrix(c(sum(result_CVD_stg2),sum(result_CVDeath_stg2),
+                                  sum(result_nonCVDeath_stg2),sum(result_QALY_stg2),
+                                  sum(result_Lifeyear_stg2)), nrow = 1, ncol=5,
+                     dimnames = list("", c("CVD events","CVD Death","non-CVD Death",
+                                           "QALY", "Life Year"))))
+print(xtable(data.frame(result_tab),caption = "Result for Strategy2"),
+      caption.placement="top",comment=FALSE)
+```
+
+\clearpage
+# Strategy 3
+
+
+```{r results="asis"}
+print(xtable(data.frame(population_data[which(population_data$strategy == "strategy3"),]),digits=c(0,0,0,0,0,0,0),
+      caption = "Distribution of the population under different strategies"),
+      caption.placement="top",comment=FALSE)
+```
+
+
+```{r}
+p_live_cvd_l <- ProbFactor(p_live_cvd,HR_l_stg3)
+p_live_cvd_m <- ProbFactor(p_live_cvd,HR_m_stg3*
+                             HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention
+p_live_cvd_h <- ProbFactor(p_live_cvd,HR_h_stg3*
+                             HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth*    # lifestyle intervention
+                             HR_hpt_lip_cvdth)   # treatment intervention 
+p_live_cvdth_l <- ProbFactor(p_live_cvdth,1)    # equal
+p_live_cvdth_m <- ProbFactor(p_live_cvdth,1*
+                               HR_smk_cvd*HR_salt_cvd*HR_wtc_cvd)  # lifestyle intervention 
+p_live_cvdth_h <- ProbFactor(p_live_cvdth,1.7*
+                               HR_smk_cvdth*HR_salt_cvdth*HR_wtc_dth* # lifestyle intervention
+                               HR_hpt_lip_cvdth) # treatment intervention 
+```
+
+```{r}
+risk_levels <- c("low","medium","high")
+result_CVD_lmh <- matrix(0,  nrow = 14,ncol = 3,
+                         dimnames = list(names_population, risk_levels))
+p_live_cvd_lmh <- matrix(cbind(p_live_cvd_l,p_live_cvd_m,p_live_cvd_h), ncol=3,
+                         dimnames = list(names_population,risk_levels))
+p_live_cvdth_lmh <- matrix(cbind(p_live_cvdth_l,p_live_cvdth_m,p_live_cvdth_h), ncol=3,
+                           dimnames = list(names_population,risk_levels))
+patient_group <- matrix(cbind(population_data[which(population_data$strategy=="strategy3"),]$low,
+                              population_data[which(population_data$strategy=="strategy3"),]$medium,
+                              population_data[which(population_data$strategy=="strategy3"),]$high),
+       ncol = 3, nrow=14,dimnames = list(names_population,risk_levels))
+prob_CVD_group3 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+prob_CVDlive_group3 <- matrix(0, ncol=14, nrow=10,
+                     dimnames=list(paste0("t",0:9),names_population))
+result_CVD_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDlive_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_QALY_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_Lifeyear_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_CVDeath_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels))
+result_nonCVDeath_stg3 <- matrix(0, ncol = 3, nrow = 14,
+                     dimnames=list(names_population, risk_levels)) 
+
+p8 <-array(runif(140,min=0.02,max=0.1),dim=c(10,14),dimnames=list(1:10,names_population))
+p9 <- array(NA, dim=c(10,14),dimnames=list(1:10,names_population))
+p10 <- array(NA, dim=c(10,14), dimnames=list(1:10,names_population))
+for(r in 1:3){  # three rish groups
+  # create a matrix for p_acvd_cvdth 
+  for(i in 1:14){
+  # construct a_P
+ if(i == 7 | i == 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:10] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:10] <- p_live_cvd_lmh[i,r]*(1-(1-p8[1:10,i]))
+    a_P["S1", "S3", 1:10] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*(1-p8[1:10,i]) 
+    a_P["S1", "S4", 1:10] <- p_live_oth_death[i]  
+    a_P["S2", "S1", 1:10] <- 0
+    a_P["S2", "S2", 1:10] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*(1-p8[1:10,i]))
+    a_P["S2", "S3", 1:10] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*(1-p8[1:10,i]) 
+    a_P["S2", "S4", 1:10] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:10] <- 1
+    a_P["S4", "S4", 1:10] <- 1
+    p9[1:10,i] <- p_ccvd_acvd[i]*(1-p8[1:10,i])
+    p10[1:10,i] <- p_live_cvd[i]
+  }
+  if(i != 7 && i != 14){
+    a_P <- array(0, dim = c(n_states, n_states, 10),
+               dimnames = list(v_names_states, v_names_states, 1:10))
+    a_P["S1", "S1", 1:5] <- 1-(p_live_cvd_lmh[i,r]*(1-p8[1:5,i]) +
+                               p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i] +
+                               p_live_oth_death[i])
+    a_P["S1", "S2", 1:5] <- p_live_cvd_lmh[i,r]*(1-p8[1:5,i])
+    a_P["S1", "S3", 1:5] <- p_live_cvdth_lmh[i,r]*p_live_cvd_lmh[i,r]*p8[1:5,i]
+    a_P["S1", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S2", "S1", 1:5] <- 0
+    a_P["S2", "S2", 1:5] <- 1-p_live_oth_death[i]-
+      (p_ccvd_cvdth[i]+p_ccvd_acvd[i]*p8[1:5,i])
+    a_P["S2", "S3", 1:5] <- p_ccvd_cvdth[i]+
+      p_ccvd_acvd[i]*p8[1:5,i]
+    a_P["S2", "S4", 1:5] <- p_live_oth_death[i]
+    a_P["S3", "S3", 1:5] <- 1
+    a_P["S4", "S4", 1:5] <- 1
+    a_P["S1", "S1", 6:10] <-  1-(p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])+
+                             p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+                             +p_live_oth_death[i+1])
+    a_P["S1", "S2", 6:10] <- p_live_cvd_lmh[i+1,r]*(1-p8[1:5,i+1])
+    a_P["S1", "S3", 6:10] <- p_live_cvdth_lmh[i+1,r]*p_live_cvd_lmh[i+1,r]*p8[1:5,i+1]
+    a_P["S1", "S4", 6:10] <- p_live_oth_death[i+1]
+    a_P["S2", "S1", 6:10] <- 0
+    a_P["S2", "S2", 6:10] <- 1-p_live_oth_death[i+1]-
+       (p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[1:5,i+1])
+    a_P["S2", "S3", 6:10] <- p_ccvd_cvdth[i+1]+p_ccvd_acvd[i+1]*p8[1:5,i+1]
+    a_P["S2", "S4", 6:10] <-  p_live_oth_death[i+1]
+    a_P["S3", "S3", 6:10] <- 1
+    a_P["S4", "S4", 6:10] <- 1
+    p9[1:5,i] <- p_ccvd_acvd[i]*(1-p8[1:5,i])
+    p9[6:10,i] <- p_ccvd_acvd[i+1]*(1-p8[6:10,i])
+    p10[1:5,i] <- p_live_cvd[i]
+    p10[6:10,i] <- p_live_cvd[i+1]
+  }
+     # construct m_M
+    v_s_init <- c(state0 = 1, state1 = 0, state2 = 0, state3 = 0) 
+    m_M <- matrix(0,nrow     = (n_t), ncol = n_states, 
+                  dimnames = list(0:(n_t-1), v_names_states))
+    m_M[1, ] <- v_s_init
+    for(t in 1:9){
+      m_M[t + 1, ] <- m_M[t, ] %*% a_P[, , t]
+    }
+     # calculate result
+    prob_CVD_group3[ ,i] <- m_M[ ,1]* p10[ ,i]  # new occurence = S1*p9
+    prob_CVDlive_group3[ ,i] <- m_M[ ,1]*(a_P["S1", "S2", 1:10]) + m_M[ ,2]*p9[ ,i] 
+  result_CVD_stg3[i,r] <- sum(prob_CVD_group3[,i]*patient_group[i,r])
+  result_CVDlive_stg3[i,r] <- sum(prob_CVDlive_group3[,i]*patient_group[i,r])
+  result_Lifeyear_stg3[i,r] <- sum(t( t(m_M) * year )*patient_group[i,r])
+  
+  result_QALY_stg3[i,r] <- sum(t(t(m_M) * uti_values)*patient_group[i,r] + 
+                          prob_CVDlive_group3[, i]*out_trans_to_cvd*patient_group[i,r])
+  result_CVDeath_stg3[i,r] <- m_M[10,3]*patient_group[i,r]
+  result_nonCVDeath_stg3[i,r] <- m_M[10,4]*patient_group[i,r]
+}
+}
+```
+
+
+```{r}
+# There is another group for Strategy3
+noncreen_names <- c("m40","m45","f40","f45")
+noscreen_group <- matrix(c(229,498,444,856),ncol = 1, nrow = 4,
+                         dimnames = list(noncreen_names,""))
+noscreen_group_CVD <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+noscreen_group_CVDlive <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+noscreen_group_Lifeyear <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+noscreen_group_QALY <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+noscreen_group_CVDeath <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+noscreen_group_nonCVDeath <- matrix(NA,ncol = 1, nrow = 4,
+                             dimnames = list(noncreen_names,""))
+m_M1 <- result_m_M[ , , 1]
+m_M2 <- result_m_M[ , , 2]
+m_M3 <- result_m_M[ , , 7]
+m_M4 <- result_m_M[ , , 8]
+noscreen_m_M <- list(m_M1, m_M2, m_M3, m_M4)
+
+for(i in 1:4){
+  name <- noncreen_names[i]
+  noscreen_group_CVD[i] <- sum(prob_CVD_group0[,noncreen_names][,i] * noscreen_group[i])
+  noscreen_group_Lifeyear[i] <- sum(t(t(result_m_M[,,name]) * year)  * noscreen_group[i])
+  noscreen_group_QALY[i] <- sum(t(t(result_m_M[,,name]) * uti_values)*noscreen_group[i] + 
+                          prob_CVDlive_group0[, i]*out_trans_to_cvd*noscreen_group[i])
+  noscreen_group_CVDeath[i] <- sum(data.frame(noscreen_m_M[i])[10,3]*noscreen_group[i])
+  noscreen_group_nonCVDeath[i] <-  sum(data.frame(noscreen_m_M[i])[10,4]*noscreen_group[i])
+}
+
+
+```
+### Result for Strategy3
+```{r results="asis"}
+print(xtable((rbind(result_CVD_stg3, "sum" = colSums(result_CVD_stg3))),
+      caption = "New CVD events for patients under Strategy1"),
+      caption.placement="top",comment=FALSE)
+
+
+result_CVD_stg3 <- sum(result_CVD_stg3, noscreen_group_CVD)
+
+result_CVDlive_stg3 <- sum(result_CVDlive_stg3, noscreen_group_CVDlive)
+result_Lifeyear_stg3 <- sum(result_Lifeyear_stg3, noscreen_group_Lifeyear)
+result_QALY_stg3 <- sum(result_QALY_stg3, noscreen_group_QALY)
+result_CVDeath_stg3 <- sum(result_CVDeath_stg3, noscreen_group_CVDeath)
+result_nonCVDeath_stg3 <- sum(result_nonCVDeath_stg3, noscreen_group_nonCVDeath) 
+
+result_tab <- data.frame(matrix(c(sum(result_CVD_stg3),sum(result_CVDeath_stg3),
+                                  sum(result_nonCVDeath_stg3),
+                                  sum(result_QALY_stg3),
+                                  sum(result_Lifeyear_stg3)), nrow = 1, ncol=5,
+                     dimnames = list("", c("CVD events","CVD Death","non-CVD Death",
+                                           "QALY", "Life Year"))))
+print(xtable(data.frame(result_tab),
+      caption = "Result for Strategy3"),
+      caption.placement="top",comment=FALSE)
+```
+
+# Conclusion
+
+```{r results="asis"}
+
+print(xtable((matrix(cbind(sum(result_CVD),sum(result_CVD_stg1),
+                           sum(result_CVD_stg2),sum(result_CVD_stg3)),nrow = 1, ncol = 4,
+      dimnames = list("",v_names_str))),
+      caption = "CVD events for patients under 3 strategies"),
+      caption.placement="top",comment=FALSE)
+
+```
+
+```{r results="asis"}
+print(xtable((matrix(cbind(sum(result_QALY),sum(result_QALY_stg1),
+                           sum(result_QALY_stg2),sum(result_QALY_stg3)),nrow = 1, ncol = 4,
+      dimnames = list("",v_names_str))),
+      caption = "QALY for patients under 3 strategies"),
+      caption.placement="top",comment=FALSE)
+
+```
+
+```{r results="asis"}
+print(xtable((matrix(cbind(sum(result_Lifeyear),sum(result_Lifeyear_stg1),
+                           sum(result_Lifeyear_stg2),sum(result_Lifeyear_stg3)),nrow = 1, ncol = 4,
+      dimnames = list("",v_names_str))),
+      caption = "Life year for patients under 3 strategies"),
+      caption.placement="top",comment=FALSE)
+
+```

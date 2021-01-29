@@ -228,8 +228,10 @@ for (i in 1:14){
 }
 p10
 ######################################################
+```
 
 
+```{r}
 for (i in 1:14){
   for (j in 1:9){
     m_M[j+1,,i]<-m_M[j,,i] %*% a_P[,,j,i]
@@ -247,31 +249,35 @@ for (i in 1:14){
   qaly[i]<-sum(qaly_m[1:10,,i])
   lifeyear[i]<-sum(lifeyear_m[1:10,,i])
 }
-
-m_M  
-n_cnew  ## new events of CVD
-n_clive  
+# n_cnew
+```
 
 
-n_cvd 
-n_cd
-n_nd
-n_d
-qaly 
-lifeyear 
-
+```{r}
+# m_M  
+# n_cnew  ## new events of CVD
+# n_clive  
+# 
+# 
+# n_cvd 
+# n_cd
+# n_nd
+# n_d
+# qaly 
+# lifeyear 
+# 
 N_cvd<-sum(n_cvd)
 N_cd<-sum(n_cd)
 N_nd<-sum(n_nd)
 N_d<-sum(n_d)
 QALY<-sum(qaly)
 LIFEYEAR<-sum(lifeyear)
-
-N_cvd 
-N_cd 
-N_nd 
-N_d
-QALY 
-LIFEYEAR  
+# 
+N_cvd
+# N_cd 
+# N_nd 
+# N_d
+# QALY 
+# LIFEYEAR  
 ```
 
